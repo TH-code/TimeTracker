@@ -1,4 +1,4 @@
-application: timetracker
+application: timelog
 version: 1
 runtime: python27
 api_version: 1
@@ -23,7 +23,7 @@ handlers:
   upload: media/img/root/apple-touch-icon(.*\.png)
 
 - url: /.*
-  script: timetracker.app
+  script: timelog.app
 
 libraries:
 - name: jinja2
