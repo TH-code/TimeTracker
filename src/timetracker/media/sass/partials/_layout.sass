@@ -1,0 +1,326 @@
+body
+  position: relative
+  width: 960px
+  margin: 20px auto 50px
+
+body, #content
+  > footer
+    text-align: center
+    padding: 15px
+
+#content
+  > footer
+    clear: both
+    height: 20px
+
+header
+  line-height: 1
+  body > & hgroup
+    float: left
+    margin:  .75em 0 1.25em 1em
+    width: 408px
+  h1
+    margin: 0 0 -.25em
+    font-size: 2.4em
+    a
+      display: block
+      font-size: 24px
+      height: 34px
+      width: 408px
+      overflow: hidden
+      text-indent: -2000px
+  h2
+    font-size: 1.2em
+
+.hornav
+  overflow: hidden
+  a
+    +link-colors($darkGreen, #000, #000, $darkGreen)
+    text-decoration: none
+  li
+    border-left: 1px solid $darkGreen
+    float: left
+    list-style: none
+    padding: 0 1em
+    &:first-child
+      border-left: 0
+
+#site-actions
+  @extend .hornav
+  float: right
+  text-transform: uppercase
+
+#main-nav
+  @extend .hornav
+  @extend .baldin
+  width: 896px
+  position: absolute
+  z-index: 2
+  padding: 13px 15px 21px
+  height: 13px
+  width: 896px
+  li
+    border:
+      left:
+        width: 2px 
+        style: groove 
+        color: rgba(255, 255, 255, 0.5)
+    line-height: 1
+
+#search
+  background: #fff
+  +border-radius(5px)
+  border: 
+    color: #fff
+    width: 1px
+    style: solid
+  +box-shadow(0 0 10px rgba(0,0,0,.4) inset)
+  padding: 3px 4px 4px
+  position: absolute
+  right: 13px
+  top: 4px
+  width: auto
+  input
+    display: inline
+    &[type="text"]
+      background: transparent
+      border-color: transparent
+      position: relative
+      top: .1em
+      width: 200px
+    &[type="submit"]
+      @extend .baldin
+      background-color: $lightGreen
+      +border-radius(3px)
+      border:
+        width: 1px
+        style: solid
+        color: $lightGreen
+      +box-shadow(0 0 8px rgb(254,252,251) inset)
+      color: #fff
+      cursor: pointer
+      font-size: 10px
+      line-height: 1
+      padding: 2px 15px
+      +text-shadow(1px 1px 4px $darkGreen, 0 0 2px $darkGreen, 0 0 3px $darkGreen)
+      &:hover
+        background-color: $darkGreen
+        border-color: $darkGreen
+
+#content
+  clear: both
+  padding: 13px
+  position: relative
+  h1
+    margin: .5em 0
+  h2
+    color: $lightGreen
+    font-size: 2em
+    margin-top: -.5em
+  hgroup
+    h1, h2
+      text-align: center
+  // .home & h1
+    // text-align: left
+  & > 
+    article
+      float: left
+      margin-top: 50px
+      padding-bottom: 2em
+  .home & > 
+    article
+      width: 440px
+      padding-right: 20px
+      height: 272px
+      overflow: auto
+      padding-bottom: 0
+  section
+    float: left
+    width: 440px
+    &:nth-child(2n)
+      margin-right: 40px
+      clear: both
+    &:nth-child(2n+1)
+      width: 414px
+    h2
+      margin-top: 0
+  .special
+    h2
+      color: #fff
+      +text-shadow(0 0 2px #000)
+.special
+  form
+    margin-bottom: 2em
+  .quote
+    clear: both
+    color: #fff
+    position: relative
+    margin-bottom: .5em
+    +text-shadow(0 0 2px #000)
+    width: 100%
+    blockquote
+      font-size: 1.5em
+    footer
+      margin-left: 3em
+      color: rgba(0,0,0,.9)
+    &:before, &:after
+      font-size: 4em
+    &:before
+      display: block
+      width: 100%
+      content: "\201C"
+      margin-bottom: -1em
+    &:after
+      bottom: -.7em
+      float: right
+      content: "\201D"
+      position: absolute
+      right: 0
+
+aside
+  float: left
+  article
+    position: relative
+    width: 30%
+    padding: 1.5%
+    float: left
+    p
+      margin-top: 0
+  footer
+    margin-top: 2em
+    text-align: right
+  .quote
+    blockquote, &:before, &:after
+      color: $lightGreen
+    &:before, &:after
+      display: block
+      font-size: 4em
+      line-height: 1
+    &:before
+      position: static
+      background-image: none
+      content: "\201C"
+      margin-bottom: -.5em
+    &:after
+      content: "\201D"
+      right: .25em
+      bottom: -.15em
+      position: absolute
+    blockquote
+      font-size: 1.25em
+      margin: .5em 1.25em
+    footer
+      text-align: left
+      float: left      
+      margin-top: 0
+      margin: .5em 1.5em
+    &:not(.quote)
+      &:before, &:after
+        position: absolute
+        content: "\00a0"
+        width: 1px
+        height: 100%
+        top: 0
+      &:before 
+        left: 0
+        +background-image(linear-gradient(top, rgba(255,255,255,0) 0%, $asidebackGrey 20%, $bodybackGrey 50%, $asidebackGrey 80%, rgba(255,255,255,0) 100%))
+      &:after
+        left: 1px
+        +background-image(linear-gradient(top, rgba(255,255,255,0) 0%, $asidebackGrey 40%, $asidebackGrey 60%, rgba(255,255,255,0) 100%))
+
+aside, section > article
+  #content & h2
+    margin-top: 0
+    margin-bottom: 0
+    color: $headerColor
+
+section > article:not(.quote)
+  @extend aside
+  padding: 13px
+  margin: 
+    bottom: 1em
+
+form:not(#search)
+  float: left
+  label 
+    float: left
+  input, select
+    float: right
+  label
+    width: 125px
+    text-align: right
+    color: #fff
+    padding: 0 5px
+    line-height: 1.8
+    &:after
+      content: ":"
+  .checkbox
+    label
+      float: left
+      text-align: left
+      &:after
+        content: ""
+    input
+      float: left
+  input[type="text"], select
+    width: 250px
+    background: #fff
+    border: 
+      color: #fff
+      width: 1px
+      style: solid
+    +border-radius(5px)
+    +box-shadow(0 0 10px rgba(0,0,0,.2) inset)
+    padding: 5px
+    margin-bottom: .5em
+  input[type="password"]
+    @extend input[type="text"]
+  select
+    padding-right: 10px
+    width: 262px
+  input[type="checkbox"]
+    margin: 5px 5px 1em 150px
+  fieldset
+    clear: both
+  div
+    clear: both
+    position: relative
+  > div
+    float: right
+
+table
+  width: 100%
+  border-collapse: separate 
+  border-spacing: 0 .5em
+
+th, td
+  padding: .5em 1em
+
+thead
+  th, td
+    background: #fff
+    color: $headerColor
+
+tbody
+  th, td
+    color: #fff
+  tr:nth-child(odd)
+    background: #222
+  tr:nth-child(even)
+    th, td
+      padding: 0 1em    
+
+.profile table
+  width: 894px
+
+.action
+  text-align: center
+
+.special
+  padding: 13px
+
+.left
+  float: left
+
+.right
+  float: right

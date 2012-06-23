@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block title %}TimeTracker{% endblock %}
+
+{% block description %}{% endblock %}
+
+{% block logout %}<li><a href="{{ url }}">{{ url_linktext }}</a></li>{% endblock %}
+
+{% block content %}
+
+    <form action="/" method="post">
+        <fieldset>
+            <textarea name="content" rows="3" cols="60"></textarea>
+        </fieldset>
+        <div class="controls"><input type="submit" value="Track"></div>
+    </form>
+
+    <section>
+      {% for entry in data %}
+        <div class="entry{% if entry.start %} start{% endif %}">
+          {% if entry.date %}
+            <span class="date">{{entry.date}}</span>
+          {% endif %}
+          {% if entry.time %}
+            <span class="time">{{entry.time}}</span>
+          {% endif %}
+          {% if entry.activities %}
+            <span class="activity{% if entry.hidden %} hidden{% endif %}">
+              {% for activity in entry.activities %}
+                {{activity}}
+                {% if not loop.last %} <span class="devider">::</span>{% endif %}
+              {% endfor %}
+            </span>
+          {% endif %}
+        </div>
+      {% endfor %}
+    </section>
+
+{% endblock %}

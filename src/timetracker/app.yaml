@@ -1,0 +1,30 @@
+application: timetracker
+version: 1
+runtime: python27
+api_version: 1
+threadsafe: true
+
+handlers:
+
+# the tree pillars
+- url: /css
+  static_dir: media/css
+- url: /img
+  static_dir: media/img
+- url: /js
+  static_dir: media/js
+
+# Put the favicon and apple-touch-icons on the root of the site.
+- url: /favicon.ico
+  static_files: media/img/root/favicon.ico
+  upload: media/img/root/favicon.ico
+- url: /apple-touch-icon(.*\.png)
+  static_files: media/img/root/apple-touch-icon\1
+  upload: media/img/root/apple-touch-icon(.*\.png)
+
+- url: /.*
+  script: timetracker.app
+
+libraries:
+- name: jinja2
+  version: latest

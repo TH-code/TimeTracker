@@ -1,0 +1,57 @@
+@import compass/css3/box-shadow
+@import compass/css3/border-radius
+@import compass/css3/text-shadow
+@import compass/css3/images
+
+// Fonts
+@font-face
+  font:
+    family: 'Baldin'
+    weight: normal
+    style: normal
+  src: url('/fonts/baldin-webfont.eot')
+  src: url('/fonts/baldin-webfont.eot?#iefix') format('embedded-opentype'), url('/fonts/baldin-webfont.woff') format('woff'), url('/fonts/baldin-webfont.ttf') format('truetype'), url('/fonts/baldin-webfont.svg#BaldinBold') format('svg')
+
+@font-face
+  font:
+    family: 'Baldin Narrow'
+    weight: normal
+    style: normal
+  src: url('/fonts/baldinar-webfont.eot')
+  src: url('/fonts/baldinar-webfont.eot?#iefix') format('embedded-opentype'), url('/fonts/baldinar-webfont.woff') format('woff'), url('/fonts/baldinar-webfont.ttf') format('truetype'), url('/fonts/baldinar-webfont.svg#BaldinarBold') format('svg')
+
+$fontFamily: unquote('"Helvetica Neue", Helvetica, Arial, sans-serif')
+$headingFontFamily: unquote('Impact, Haettenschweiler, “Arial Narrow Bold”, sans-serif')
+$baldin: unquote('Baldin, ' + $headingFontFamily)
+$baldinar: unquote('"Baldin Narrow", ' + $headingFontFamily)
+
+// content
+$nbsp: '\0000a0'
+$raquo: '\0000bb'
+
+// Colors
+// Voetbal colors
+$lightGreen: #97bf0d
+$darkGreen: #7e9530
+$bodybackGrey: rgba(134,168,181,.7)
+$asidebackGrey: rgba(134,168,181,.2)
+
+// 
+$fontColor: #8d8c8c
+$headerColor: #222
+$selectionBackgroundColor: #fe57a1
+$hrColor: #ccc
+$insColor: #000
+$insBackgroundColor: #ff9
+$markColor: $insColor
+$markBackgroundColor: #ff0
+
+// Link
+$linkColor: $darkGreen
+$linkHoverColor: $lightGreen
+$linkActiveColor: $linkHoverColor
+$linkVisitedColor: #555
+$linkFocusColor: $linkHoverColor
+
+// Gradients
+$experimental-support-for-svg: true

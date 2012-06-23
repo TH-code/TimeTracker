@@ -1,0 +1,63 @@
+html
+  font:
+    family: $fontFamily
+    size: 13px
+  line-height: 1.8
+
+h1, h2, h3
+  @extend .baldinar
+  em, i, b, strong
+    font:
+      weight: normal
+      style: normal
+
+h3
+  font-size: 18px
+  margin-bottom: 2em
+
+legend
+  @extend h3
+
+legend, label
+  @extend .text-shadow
+  
+.baldin
+  font:
+    family: $baldin
+
+.baldinar
+  font:
+    family: $baldinar
+
+.baldin, .baldinar
+  font-weight: normal
+  text-transform: uppercase
+  
+.description
+  font-size: 120%
+  color: $headerColor
+
+.text-shadow
+  +text-shadow(1px 1px 4px $darkGreen, 0 0 2px $darkGreen, 0 0 3px $darkGreen)
+  &:hover
+    +text-shadow(1px 1px 4px $darkGreen, 0 0 2px $darkGreen, 0 0 3px $darkGreen, 0 0 5px $darkGreen)
+
+.big
+  list-style: none
+  li
+    position: relative
+    margin-bottom: 1em
+    &:before
+      @extend .baldinar
+      color: #000
+      font-size: 4em
+      left: -.75em
+      line-height: 1
+      position: absolute
+      top: -.025em
+    &:nth-child(1):before
+      content: '1'
+    &:nth-child(2):before
+      content: '2'
+    &:nth-child(3):before
+      content: '3'
