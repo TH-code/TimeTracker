@@ -1,4 +1,4 @@
-application: timelog
+application: th-timelog
 version: 1
 runtime: python27
 api_version: 1
@@ -18,12 +18,12 @@ handlers:
 - url: /favicon.ico
   static_files: media/img/root/favicon.ico
   upload: media/img/root/favicon.ico
-- url: /apple-touch-icon(.*\.png)
-  static_files: media/img/root/apple-touch-icon\1
-  upload: media/img/root/apple-touch-icon(.*\.png)
+# - url: /apple-touch-icon(.*\.png)
+  # static_files: media/img/root/apple-touch-icon\1
+  # upload: media/img/root/apple-touch-icon(.*\.png)
 
 - url: /.*
-  script: timelog.app
+  script: th-timelog.app
 
 libraries:
 - name: jinja2
