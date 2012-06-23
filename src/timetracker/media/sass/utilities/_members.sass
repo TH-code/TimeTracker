@@ -1,0 +1,46 @@
+@import compass/css3/border-radius
+
+// Workflow colors
+$workflow-private: red !default
+$workflow-visible: #74ae0b !default
+$workflow-published: #436976 !default
+$workflow-pending: #ffa500 !default
+$workflow-expired: red !default
+$workflow-syndicated: green !default
+
+// Force workflow colors?
+$workflow-important: true
+
+=members
+  /*** =Member **
+  /* workflow state colors
+  .state-private
+    @if $workflow-important == true
+      color: $workflow-private !important
+    @else
+      color: $workflow-private
+  .state-visible
+    @if $workflow-important == true
+      color: $workflow-visible !important
+    @else
+      color: $workflow-visible
+  .state-published
+    @if $workflow-important == true
+      color: $workflow-published !important
+    @else
+      color: $workflow-published
+  .state-pending
+    @if $workflow-important == true
+      color: $workflow-pending !important
+    @else
+      color: $workflow-pending
+  .state-expired
+    @if $workflow-important == true
+      color: $workflow-expired !important
+    @else
+      color: $workflow-expired
+  .syndicated
+    @if $workflow-important == true
+      color: $workflow-syndicated !important
+    @else
+      color: $workflow-syndicated

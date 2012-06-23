@@ -7,7 +7,7 @@ from config import jinja_environment
 from datetime import datetime
 from time import strptime
 
-class MainPage(webapp2.RequestHandler):
+class TimeTracker(webapp2.RequestHandler):
 
     def get(self):
         for d in demodata:
@@ -44,15 +44,16 @@ class Help(webapp2.RequestHandler):
 
     def get(self):
         template = jinja_environment.get_template('help.html')
-        self.response.out.write(template.render(template_values))
+        self.response.out.write(template.render())
 
 class Settings(webapp2.RequestHandler):
 
     def get(self):
+        template_values = {}
         template = jinja_environment.get_template('settings.html')
         self.response.out.write(template.render(template_values))
 
-app = webapp2.WSGIApplication([('/', MainPage),
+app = webapp2.WSGIApplication([('/', TimeTracker),
                                ('/help', Help),
                                ('/settings', Settings)],
                               debug=True)

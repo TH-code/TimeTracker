@@ -1,0 +1,84 @@
+$deco-columns: 16 !default
+$deco-width: 100% !default
+$deco-margin: 1.125% !default
+$deco-side: $deco-margin !default
+$deco-base: true !default
+$deco-convenience: true !default
+$deco-min-convenience: 4 !default
+$deco-faux-columns: false !default
+$deco-faux-columns-margin-bottom: -2000px !default
+$deco-faux-columns-padding-bottom: 2000px !default
+
+=deco-gs
+  @if $deco-columns > 0
+    //
+      Make sure you use only one type of unit with values > 0, so
+      either em, px or %. Pixel perfect is possible, but percentage is advised.
+      -------------------------------------------------------------------------
+      - columns = total number of columns
+      - margin = margin between columns
+      - side = margins on the side of the first and last column
+      - width = total width of a row
+      - base = base classes based on amounts of columns
+      - convenience = classes based on fractures
+      - min-convenience = minimum fracture size, default is 6,
+        allowing for 1/2 thought to 1/6
+      -------------------------------------------------------------------------
+      Available in multiple variants, see http://deco.gs
+
+    /* =Deco.gs
+    $_space: $deco-width - ($deco-columns - 1) * $deco-margin - 2 * $deco-side
+    $_column: $_space / $deco-columns
+    div
+      &.row
+        display: block
+        float: left
+        position: relative
+        width: $deco-width
+        @if $deco-faux-columns == true
+          overflow: hidden
+      &.cell
+        float: left
+        left: 100%
+        position: relative
+        @if $deco-faux-columns == true
+          margin-bottom: $deco-faux-columns-margin-bottom
+          padding-bottom: $deco-faux-columns-padding-bottom
+      .ie6 &.cell
+        float: none
+
+      @if $deco-base == true
+        @for $_i from 1 through $deco-columns
+          $_n: $_i - 1
+          $_size: $_i * $_column + $_n * $deco-margin
+          &.width-#{$_i}
+            width: $_size
+        @for $_i from 1 through $deco-columns
+          $_n: $_i - 1
+          $_size: $_i * $_column + $_n * $deco-margin
+          &.position-#{$_n}
+            margin-left: $deco-side + $_n * $_column + $_n * $deco-margin - $deco-width
+      @if $deco-convenience == true
+        &.position-leftmost
+          margin-left: $deco-side - $deco-width
+        @if $deco-base != true
+          &.position-0
+            @extend div.position-leftmost
+        &.width-full
+          width: $deco-width - 2 * $deco-side
+        @for $_i from 1 through $deco-columns
+          @if $_i > 1 and $_i < $deco-columns and $deco-columns % $_i == 0
+            @for $_j from 1 through $deco-columns
+              @if $_j != 0 and $_j % $_i == 0 and $_j / $_i != $deco-columns / $_i and $deco-columns / $_i <= $deco-min-convenience
+                $_o: $_j - 1
+                $_size: $_j * $_column + $_o * $deco-margin
+                $_frac: $_j / $_i + "\3a " + $deco-columns / $_i
+                &.width-#{$_frac}
+                  width: $_size
+            @for $_j from 1 through $deco-columns
+              @if $_j != 0 and $_j % $_i == 0 and $_j / $_i != $deco-columns / $_i and $deco-columns / $_i <= $deco-min-convenience
+                $_o: $_j - 1
+                $_size: $_j * $_column + $_o * $deco-margin
+                $_frac: $_j / $_i + "\3a " + $deco-columns / $_i
+                &.position-#{$_frac}
+                  margin-left: $deco-side + $_j * $_column + $_j * $deco-margin - $deco-width
