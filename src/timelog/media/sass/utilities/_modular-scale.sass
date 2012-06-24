@@ -1,0 +1,138 @@
+// Numbers needed to create a double stranded modular scale. The default scale
+// is the golden mean (1:1.618), other classical scales are: 
+// the musical fifth (2:3 = 1:1.5) or the musical fourth (3:4 = 1:1.333).
+$modular-scale: 1.618 !default
+
+// Minimal text size
+$modular-min: 0.5 !default
+
+// Number of modular steps, "dynamic" variables are supported up until 9
+$modular-steps: 5 !default
+$ideal-text-size: 1em !default
+$double-stranded: true !default
+$important-number: 2em !default
+
+// "Dynamic" variables
+$ms-0: false !default
+$ms-1: false !default
+$ms-2: false !default
+$ms-3: false !default
+$ms-4: false !default
+$ms-5: false !default
+$ms-6: false !default
+$ms-7: false !default
+$ms-8: false !default
+$ms-9: false !default
+$pms-0: false !default
+$pms-1: false !default
+$pms-2: false !default
+$pms-3: false !default
+$pms-4: false !default
+$pms-5: false !default
+$pms-6: false !default
+$pms-7: false !default
+$pms-8: false !default
+$pms-9: false !default
+$sms-0: false !default
+$sms-1: false !default
+$sms-2: false !default
+$sms-3: false !default
+$sms-4: false !default
+$sms-5: false !default
+$sms-6: false !default
+$sms-7: false !default
+$sms-8: false !default
+$sms-9: false !default
+
+=modular-scale
+  /*** =Modular scales **
+  $base-primary: $ideal-text-size
+  @if $double-stranded == true
+    $base-secondary: $important-number
+    /* Primary and Secondary modular scale
+    // Get the lowest value above or equal to min
+    @while $base-primary >= $modular-min
+      $base-primary: $base-primary / $modular-scale
+    @while $base-secondary >= $modular-min
+      $base-secondary: $base-secondary / $modular-scale
+    // Create primary modular scales up until the max
+    $i: 0
+    @while $i <= $modular-steps
+      $base-primary: $base-primary * $modular-scale
+      @if $i == 0
+        $pms-0: $base-primary
+      @if $i == 1
+        $pms-1: $base-primary
+      @if $i == 2
+        $pms-2: $base-primary
+      @if $i == 3
+        $pms-3: $base-primary
+      @if $i == 4
+        $pms-4: $base-primary
+      @if $i == 5
+        $pms-5: $base-primary
+      @if $i == 6
+        $pms-6: $base-primary
+      @if $i == 7
+        $pms-7: $base-primary
+      @if $i == 8
+        $pms-8: $base-primary
+      @if $i == 9
+        $pms-9: $base-primary
+      .pms-#{$i}
+        font-size: $base-primary
+      $base-secondary: $base-secondary * $modular-scale
+      @if $i == 0
+        $sms-0: $base-secondary
+      @if $i == 1
+        $sms-1: $base-secondary
+      @if $i == 2
+        $sms-2: $base-secondary
+      @if $i == 3
+        $sms-3: $base-secondary
+      @if $i == 4
+        $sms-4: $base-secondary
+      @if $i == 5
+        $sms-5: $base-secondary
+      @if $i == 6
+        $sms-6: $base-secondary
+      @if $i == 7
+        $sms-7: $base-secondary
+      @if $i == 8
+        $sms-8: $base-secondary
+      @if $i == 9
+        $sms-9: $base-secondary
+      .sms-#{$i}
+        font-size: $base-secondary
+      $i: $i + 1
+  @else
+    // Get the lowest value above or equal to min
+    @while $base-primary >= $modular-min
+      $base-primary: $base-primary / $modular-scale
+    // Create primary modular scales up until the max
+    $i: 0
+    @while $i <= $modular-steps
+      $base-primary: $base-primary * $modular-scale
+      @if $i == 0
+        $ms-0: $base-primary
+      @if $i == 1
+        $ms-1: $base-primary
+      @if $i == 2
+        $ms-2: $base-primary
+      @if $i == 3
+        $ms-3: $base-primary
+      @if $i == 4
+        $ms-4: $base-primary
+      @if $i == 5
+        $ms-5: $base-primary
+      @if $i == 6
+        $ms-6: $base-primary
+      @if $i == 7
+        $ms-7: $base-primary
+      @if $i == 8
+        $ms-8: $base-primary
+      @if $i == 9
+        $ms-9: $base-primary
+      .ms-#{$i}
+        font-size: $base-primary
+      $i: $i + 1
