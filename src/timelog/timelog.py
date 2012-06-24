@@ -7,6 +7,9 @@ from config import jinja_environment
 from datetime import datetime
 from time import strptime
 
+def days_hours_minutes(td):
+    return td.days, td.seconds//3600, (td.seconds//60)%60
+
 class TimeTracker(webapp2.RequestHandler):
 
     def get(self):
@@ -16,6 +19,8 @@ class TimeTracker(webapp2.RequestHandler):
                                                    '%m-%d-%Y %H:%M')[0:6])
             except TypeError:
                 pass
+            if d['activity'] == 'start' and d['start'] == False:
+                d['start'] = True
 
         if users.get_current_user():
             url = users.create_logout_url(self.request.uri)
@@ -28,29 +33,62 @@ class TimeTracker(webapp2.RequestHandler):
             data = []
             template = jinja_environment.get_template('index.html')
 
-        template_values = {
-            'data': data,
-            'greetings': [],
-            'url': url,
-            'url_linktext': url_linktext,
-        }
-
+        for i, entry in enumerate(data):
+            entry['weekday'] = entry['datetime'].strftime('%a').lower()
+            if not entry['start'] and not entry['pause']:
+                try:
+                    td = entry['datetime'] - data[i+1]['datetime']
+                    hours, minutes = str(td).split(':')[:2] 
+                    entry['duration'] = ':'.join((hours, minutes))
+                    entry['hours'] = hours
+                    entry['minutes'] = minutes
+                except IndexError:
+                    pass
+#            if entry['start']:
+#            import pdb; pdb.set_trace()
+            
+        template_values = {'data': data,
+                           'url': url,
+                           'url_linktext': url_linktext }
         self.response.out.write(template.render(template_values))
 
     def post(self):
         pass
 
+
 class Help(webapp2.RequestHandler):
 
     def get(self):
-        template = jinja_environment.get_template('help.html')
-        self.response.out.write(template.render())
+        
+        if users.get_current_user():
+            url = users.create_logout_url(self.request.uri)
+            url_linktext = 'Logout'
+            template = jinja_environment.get_template('help.html')
+        else:
+            url = users.create_login_url(self.request.uri)
+            url_linktext = 'Login'
+            template = jinja_environment.get_template('index.html')
+
+        template_values = {'url': url,
+                           'url_linktext': url_linktext}
+        self.response.out.write(template.render(template_values))
+
 
 class Settings(webapp2.RequestHandler):
 
     def get(self):
-        template_values = {}
-        template = jinja_environment.get_template('settings.html')
+        
+        if users.get_current_user():
+            url = users.create_logout_url(self.request.uri)
+            url_linktext = 'Logout'
+            template = jinja_environment.get_template('settings.html')
+        else:
+            url = users.create_login_url(self.request.uri)
+            url_linktext = 'Login'
+            template = jinja_environment.get_template('index.html')
+
+        template_values = {'url': url,
+                           'url_linktext': url_linktext}
         self.response.out.write(template.render(template_values))
 
 app = webapp2.WSGIApplication([('/', TimeTracker),
@@ -389,8 +427,8 @@ demodata = [{'activities': ['bavaria', 'com', 'meeting'],
   'pause': False,
   'start': False,
   'time': '12:30'},
- {'activities': ['__start_'],
-  'activity': '__start_',
+ {'activities': ['start'],
+  'activity': 'start',
   'date': '06-21-2011',
   'datetime': '06-21-2011 09:15',
   'pause': False,

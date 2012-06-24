@@ -4,7 +4,7 @@ html
 #content
   background: 
     image: image-url('clock.svg')
-    position: bottom left
+    position: bottom right
     repeat: no-repeat
   padding:
     bottom: 340px
@@ -21,15 +21,57 @@ h1
     size: 1.5em 1.5em
   padding: 
     left: 1.75em
-  margin: 
-    left: -1.75em
 
 header
   a
-    +link-colors($blue4 !important, $blue3 !important ) 
+    +link-colors($blue4 !important, $red5 !important ) 
 
 h2
   color: $headerColor
 
 .description
   color: white
+
+.timelog .timelog, .help .help, .settings .settings
+  color: $red5 !important
+
+.entry
+  background: $red1
+  color: #fff
+  border:
+    top: 2px solid #fff
+
+.mon
+  .date
+    color: $grey
+  background: $grey
+.tue
+  .date
+    color: $red2
+  background: $red2
+.wed
+  .date
+    color: $red3
+  background: $red3
+.thu
+  .date
+    color: $red4
+  background: $red4
+.fri
+  .date
+    color: $red5
+  background: $red5
+.sat
+  .date
+    color: $blue3
+  background: $blue3
+.sun
+  .date
+    color: $blue2
+  background: $blue2
+
+.start, .date, .time, .line
+  color: $red1
+  background: transparent
+
+  

@@ -10,15 +10,14 @@ header
 
 h1
   @extend .left
-  position: relative
-  left: -1.75em
 
 nav
   clear: right
   overflow: hidden
   text-transform: uppercase
+  margin:
+    top: 5.25em
   a
-    +link-colors($red4, $red3)
     text-decoration: none
   li
     border-left: 2px solid #fff
@@ -46,8 +45,55 @@ nav
   width: 70%
   text-align: right
 
+.log
+  overflow: auto
+  height: 800px
+  
+.entry
+  padding: .25em .5em
+  position: relative
+
+.time, .line
+  left: -4em
+  position: absolute
+  top: -0.7em
+
+.date
+  left: -11em
+
+.line
+  left: -0.85em
+  top: -0.8em
+  
 .left
   float: left
 
 .right
   float: right
+
+.duration
+  float: right
+.duration-1
+  min-height: 1em
+.duration-2
+  min-height: 2em
+.duration-3
+  min-height: 3em
+.duration-4
+  min-height: 4em
+.duration-5
+  min-height: 5em
+.duration-6
+  min-height: 6em
+.duration-7
+  min-height: 7em
+.duration-8
+  min-height: 8em
+.duration-9
+  min-height: 9em
+.duration-1
+.duration-1
+.duration-1
+.duration-1
+.duration-1
+.duration-1

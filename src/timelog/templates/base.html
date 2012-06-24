@@ -21,15 +21,14 @@
 </head>
 <body{% block bodyattr %}{% endblock %}>
     <div id="head-wrap">
-        <span id="head-back"><!----></span>
         <header>
             <h1><a href="/" title="Home">Timelog</a></h1>
             {% block nav %}
             <nav>
                 <ul>
-                    <li><a href="/">Home</a></li>
-                    <li><a href="/help">Help</a></li>
-                    <li><a href="/settings">Settings</a></li>
+                    <li><a class="timelog" href="/">Home</a></li>
+                    <li><a class="help" href="/help">Help</a></li>
+                    <li><a class="settings" href="/settings">Settings</a></li>
                     {% block logout %}{% endblock %}
                 </ul>
             </nav>

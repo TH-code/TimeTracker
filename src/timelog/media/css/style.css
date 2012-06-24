@@ -96,18 +96,45 @@ td { vertical-align: top; }
 
 html { background-color: #d6d0d7; }
 
-#content { background-image: url('/img/clock.svg?1340563490'); background-position: bottom left; background-repeat: no-repeat; padding-bottom: 340px; }
+#content { background-image: url('/img/clock.svg?1340576649'); background-position: bottom right; background-repeat: no-repeat; padding-bottom: 340px; }
 
 #head-wrap { background-color: #081c33; -moz-box-shadow: 0 0 10px #40152a; -webkit-box-shadow: 0 0 10px #40152a; -o-box-shadow: 0 0 10px #40152a; box-shadow: 0 0 10px #40152a; }
 
-h1 { background-image: url('/img/icon.svg?1340546528'); background-position: top left; background-repeat: no-repeat; background-size: 1.5em 1.5em; padding-left: 1.75em; margin-left: -1.75em; }
+h1 { background-image: url('/img/icon.svg?1340546528'); background-position: top left; background-repeat: no-repeat; background-size: 1.5em 1.5em; padding-left: 1.75em; }
 
 header a { color: #d2e9ff !important; }
-header a:hover { color: #276aba !important; }
+header a:hover { color: #ff5434 !important; }
 
-h2 { color: #222222; }
+h2 { color: #731630; }
 
 .description { color: white; }
+
+.timelog .timelog, .help .help, .settings .settings { color: #ff5434 !important; }
+
+.entry { background: #261822; color: white; border-top: 2px solid white; }
+
+.mon { background: #746477; }
+.mon .date { color: #746477; }
+
+.tue { background: #40152a; }
+.tue .date { color: #40152a; }
+
+.wed { background: #731630; }
+.wed .date { color: #731630; }
+
+.thu { background: #cc1e2c; }
+.thu .date { color: #cc1e2c; }
+
+.fri { background: #ff5434; }
+.fri .date { color: #ff5434; }
+
+.sat { background: #276aba; }
+.sat .date { color: #276aba; }
+
+.sun { background: #123b77; }
+.sun .date { color: #123b77; }
+
+.start, .date, .time, .line { color: #261822; background: transparent; }
 
 /** =Modular scales ** */
 .ms-0 { font-size: 0.667em; }
@@ -129,17 +156,18 @@ html { font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; font-size: 1
 h1, h2 { font-family: "Bilbo Swash Caps", cursive; font-weight: normal; line-height: 1.8; }
 h1 a, h2 a { text-decoration: none; }
 
-h1 { margin: 0 -1.75em 0 0; }
+h1 { margin: 0.1em -1.75em; }
+
+.date, .time, .start { font-weight: bold; font-family: georgia; font-style: italic; }
+
+.date, .time, .line { text-align: right; }
 
 body { margin: 0; padding: 0; width: 100%; }
 
 header { height: 85px; margin: 15px auto 50px; width: 960px; }
 
-h1 { position: relative; left: -1.75em; }
-
-nav { clear: right; overflow: hidden; text-transform: uppercase; }
-nav a { color: #cc1e2c; text-decoration: none; }
-nav a:hover { color: #731630; }
+nav { clear: right; overflow: hidden; text-transform: uppercase; margin-top: 5.25em; }
+nav a { text-decoration: none; }
 nav li { border-left: 2px solid white; float: left; list-style: none; padding: 0 1em; line-height: 1; }
 nav li:first-child { border-left: 0; }
 
@@ -149,9 +177,39 @@ nav li:first-child { border-left: 0; }
 
 .description { width: 70%; text-align: right; }
 
+.log { overflow: auto; height: 800px; }
+
+.entry { padding: 0.25em 0.5em; position: relative; }
+
+.time, .line { left: -4em; position: absolute; top: -0.7em; }
+
+.date { left: -11em; }
+
+.line { left: -0.85em; top: -0.8em; }
+
 .left, h1 { float: left; }
 
 .right, .description, nav { float: right; }
+
+.duration { float: right; }
+
+.duration-1 { min-height: 1em; }
+
+.duration-2 { min-height: 2em; }
+
+.duration-3 { min-height: 3em; }
+
+.duration-4 { min-height: 4em; }
+
+.duration-5 { min-height: 5em; }
+
+.duration-6 { min-height: 6em; }
+
+.duration-7 { min-height: 7em; }
+
+.duration-8 { min-height: 8em; }
+
+.duration-9 { min-height: 9em; }
 
 .ir { display: block; border: 0; text-indent: -999em; overflow: hidden; background-color: transparent; background-repeat: no-repeat; text-align: left; direction: ltr; *line-height: 0; }
 .ir br { display: none; }

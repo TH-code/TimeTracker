@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block title %}TimeTracker{% endblock %}
-
+{% block bodyattr %} class="timelog"{% endblock %}
 {% block description %}{% endblock %}
 
 {% block logout %}<li><a href="{{ url }}">{{ url_linktext }}</a></li>{% endblock %}
@@ -15,14 +15,17 @@
         <div class="controls"><input type="submit" value="Track"></div>
     </form>
 
-    <section>
+    <section class="log">
       {% for entry in data %}
-        <div class="entry{% if entry.start %} start{% endif %}">
-          {% if entry.date %}
-            <span class="date">{{entry.date}}</span>
+        <div class="entry{% if entry.weekday %} {{entry.weekday}}{% endif %}{% if entry.start %} start{% endif %}{% if entry.hours %} duration-{{entry.hours}}{% endif %}">
+          {% if entry.date and entry.start %}
+            <span class="date">{{entry.date}}</span> &mdash;
           {% endif %}
           {% if entry.time %}
             <span class="time">{{entry.time}}</span>
+          {% endif %}
+          {% if entry.date or entry.time %}
+            <span class="line">&mdash;</span>
           {% endif %}
           {% if entry.activities %}
             <span class="activity{% if entry.hidden %} hidden{% endif %}">
@@ -31,6 +34,10 @@
                 {% if not loop.last %} <span class="devider">::</span>{% endif %}
               {% endfor %}
             </span>
+          {% endif %}
+          
+          {% if entry.duration %}
+            <span class="duration">{{entry.duration}}</span>
           {% endif %}
         </div>
       {% endfor %}
