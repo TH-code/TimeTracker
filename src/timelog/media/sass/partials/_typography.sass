@@ -1,7 +1,7 @@
 @import utilities/modular-scale
-$modular-scale: 1.618
+$modular-scale: 1.5
 $modular-min: 0.5
-$modular-steps: 5
+$modular-steps: 6
 $ideal-text-size: 1em
 $double-stranded: false
 +modular-scale
@@ -21,10 +21,11 @@ h1, h2
     text-decoration: none 
 
 h1
-  @extend .ms-4 
+  @extend .ms-5
+  margin: 0 -1.75em 0 0
 
 h2
-  @extend .ms-3
+  @extend .ms-4
 
-h3
+h3, .description
   @extend .ms-2

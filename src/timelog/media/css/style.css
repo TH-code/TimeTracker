@@ -4,19 +4,19 @@ audio, canvas, video { display: inline-block; *display: inline; *zoom: 1; }
 
 audio:not([controls]), [hidden] { display: none; }
 
-html { font-size: 100%; -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; font-family: sans-serif; color: #8d8c8c; }
+html { font-size: 100%; -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; font-family: sans-serif; color: #261822; }
 
-button, input, select, textarea { font-family: sans-serif; color: #8d8c8c; }
+button, input, select, textarea { font-family: sans-serif; color: #261822; }
 
 body { margin: 0; font-size: 1em; line-height: 1.4; }
 
 ::-moz-selection, ::selection { background: #fe57a1; color: white; text-shadow: none; }
 
-a { color: #7e9530; }
-a:visited { color: #555555; }
-a:focus { color: #97bf0d; }
-a:hover { color: #97bf0d; }
-a:active { color: #97bf0d; }
+a { color: #731630; }
+a:visited { color: #731630; }
+a:focus { color: #261822; }
+a:hover { color: #261822; }
+a:active { color: #40152a; }
 a:focus { outline: thin dotted; }
 a:hover, a:active { outline: 0; }
 
@@ -94,42 +94,64 @@ td { vertical-align: top; }
 
 .chromeframe { margin: 0.2em 0; background: #cccccc; color: black; padding: 0.2em 0; }
 
-h1, h2 { color: #222222; }
-h1 em, h1 i, h1 b, h1 strong, h2 em, h2 i, h2 b, h2 strong { color: #97bf0d; }
+html { background-color: #d6d0d7; }
+
+#content { background-image: url('/img/clock.svg?1340563490'); background-position: bottom left; background-repeat: no-repeat; padding-bottom: 340px; }
+
+#head-wrap { background-color: #081c33; -moz-box-shadow: 0 0 10px #40152a; -webkit-box-shadow: 0 0 10px #40152a; -o-box-shadow: 0 0 10px #40152a; box-shadow: 0 0 10px #40152a; }
+
+h1 { background-image: url('/img/icon.svg?1340546528'); background-position: top left; background-repeat: no-repeat; background-size: 1.5em 1.5em; padding-left: 1.75em; margin-left: -1.75em; }
+
+header a { color: #d2e9ff !important; }
+header a:hover { color: #276aba !important; }
+
+h2 { color: #222222; }
+
+.description { color: white; }
 
 /** =Modular scales ** */
-.ms-0 { font-size: 0.618em; }
+.ms-0 { font-size: 0.667em; }
 
-.ms-1 { font-size: 1.0em; }
+.ms-1 { font-size: 1em; }
 
-.ms-2, h3 { font-size: 1.618em; }
+.ms-2, h3, .description { font-size: 1.5em; }
 
-.ms-3, h2 { font-size: 2.618em; }
+.ms-3 { font-size: 2.25em; }
 
-.ms-4, h1 { font-size: 4.236em; }
+.ms-4, h2 { font-size: 3.375em; }
 
-.ms-5 { font-size: 6.854em; }
+.ms-5, h1 { font-size: 5.063em; }
+
+.ms-6 { font-size: 7.594em; }
 
 html { font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; font-size: 13px; line-height: 1.8; }
 
 h1, h2 { font-family: "Bilbo Swash Caps", cursive; font-weight: normal; line-height: 1.8; }
 h1 a, h2 a { text-decoration: none; }
 
-body { position: relative; width: 960px; margin: 20px auto 50px; }
+h1 { margin: 0 -1.75em 0 0; }
 
-.hornav, #site-actions { overflow: hidden; }
-.hornav a, #site-actions a { color: #7e9530; text-decoration: none; }
-.hornav a:visited, #site-actions a:visited { color: #7e9530; }
-.hornav a:hover, #site-actions a:hover { color: black; }
-.hornav a:active, #site-actions a:active { color: black; }
-.hornav li, #site-actions li { border-left: 1px solid #7e9530; float: left; list-style: none; padding: 0 1em; }
-.hornav li:first-child, #site-actions li:first-child { border-left: 0; }
+body { margin: 0; padding: 0; width: 100%; }
 
-#site-actions { float: right; text-transform: uppercase; position: absolute; top: 0; right: 0; }
+header { height: 85px; margin: 15px auto 50px; width: 960px; }
 
-.left { float: left; }
+h1 { position: relative; left: -1.75em; }
 
-.right { float: right; }
+nav { clear: right; overflow: hidden; text-transform: uppercase; }
+nav a { color: #cc1e2c; text-decoration: none; }
+nav a:hover { color: #731630; }
+nav li { border-left: 2px solid white; float: left; list-style: none; padding: 0 1em; line-height: 1; }
+nav li:first-child { border-left: 0; }
+
+#head-wrap { overflow: hidden; }
+
+#content { margin: 0 auto; width: 960px; position: relative; width: 960px; margin: 20px auto 50px; }
+
+.description { width: 70%; text-align: right; }
+
+.left, h1 { float: left; }
+
+.right, .description, nav { float: right; }
 
 .ir { display: block; border: 0; text-indent: -999em; overflow: hidden; background-color: transparent; background-repeat: no-repeat; text-align: left; direction: ltr; *line-height: 0; }
 .ir br { display: none; }

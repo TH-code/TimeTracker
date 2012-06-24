@@ -1,28 +1,50 @@
 body
+  margin: 0
+  padding: 0
+  width: 100%
+
+header
+  height: 85px
+  margin: 15px auto 50px
+  width: 960px
+
+h1
+  @extend .left
+  position: relative
+  left: -1.75em
+
+nav
+  clear: right
+  overflow: hidden
+  text-transform: uppercase
+  a
+    +link-colors($red4, $red3)
+    text-decoration: none
+  li
+    border-left: 2px solid #fff
+    float: left
+    list-style: none
+    padding: 0 1em
+    line-height: 1
+    &:first-child
+      border-left: 0
+
+.description, nav
+  @extend .right
+
+#head-wrap
+  overflow: hidden
+
+#content
+  margin: 0 auto
+  width: 960px
   position: relative
   width: 960px
   margin: 20px auto 50px
 
-.hornav
-  overflow: hidden
-  a
-    +link-colors($darkGreen, #000, #000, $darkGreen)
-    text-decoration: none
-  li
-    border-left: 1px solid $darkGreen
-    float: left
-    list-style: none
-    padding: 0 1em
-    &:first-child
-      border-left: 0
-
-#site-actions
-  @extend .hornav
-  float: right
-  text-transform: uppercase
-  position: absolute
-  top: 0 
-  right: 0
+.description
+  width: 70%
+  text-align: right
 
 .left
   float: left
