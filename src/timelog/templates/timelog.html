@@ -17,7 +17,7 @@
 
     <section class="log">
       {% for entry in data %}
-        <div class="entry{% if entry.weekday %} {{entry.weekday}}{% endif %}{% if entry.start %} start{% endif %}{% if entry.hours %} duration-{{entry.hours}}{% endif %}">
+        <div class="entry{% if entry.weekday %} {{entry.weekday}}{% endif %}{% if entry.pause %} pause{% endif %}{% if entry.start %} start{% endif %}{% if entry.hours %} duration-{{entry.hours}}{% endif %}">
           {% if entry.date and entry.start %}
             <span class="date">{{entry.date}}</span> &mdash;
           {% endif %}

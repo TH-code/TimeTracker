@@ -48,6 +48,7 @@ nav
 .log
   overflow: auto
   height: 800px
+  padding: 1em .25em 1em 4em
   
 .entry
   padding: .25em .5em
@@ -73,27 +74,7 @@ nav
 
 .duration
   float: right
-.duration-1
-  min-height: 1em
-.duration-2
-  min-height: 2em
-.duration-3
-  min-height: 3em
-.duration-4
-  min-height: 4em
-.duration-5
-  min-height: 5em
-.duration-6
-  min-height: 6em
-.duration-7
-  min-height: 7em
-.duration-8
-  min-height: 8em
-.duration-9
-  min-height: 9em
-.duration-1
-.duration-1
-.duration-1
-.duration-1
-.duration-1
-.duration-1
+
+@for $_i from 1 through 24
+  .duration-#{$_i}
+    min-height: $_i * 1em

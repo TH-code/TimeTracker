@@ -113,6 +113,8 @@ h2 { color: #731630; }
 
 .entry { background: #261822; color: white; border-top: 2px solid white; }
 
+.pause { color: rgba(255, 255, 255, 0.7); }
+
 .mon { background: #746477; }
 .mon .date { color: #746477; }
 
@@ -160,6 +162,8 @@ h1 { margin: 0.1em -1.75em; }
 
 .date, .time, .start { font-weight: bold; font-family: georgia; font-style: italic; }
 
+.pause { font-style: italic; }
+
 .date, .time, .line { text-align: right; }
 
 body { margin: 0; padding: 0; width: 100%; }
@@ -177,7 +181,7 @@ nav li:first-child { border-left: 0; }
 
 .description { width: 70%; text-align: right; }
 
-.log { overflow: auto; height: 800px; }
+.log { overflow: auto; height: 800px; padding: 1em 0.25em 1em 4em; }
 
 .entry { padding: 0.25em 0.5em; position: relative; }
 
@@ -210,6 +214,36 @@ nav li:first-child { border-left: 0; }
 .duration-8 { min-height: 8em; }
 
 .duration-9 { min-height: 9em; }
+
+.duration-10 { min-height: 10em; }
+
+.duration-11 { min-height: 11em; }
+
+.duration-12 { min-height: 12em; }
+
+.duration-13 { min-height: 13em; }
+
+.duration-14 { min-height: 14em; }
+
+.duration-15 { min-height: 15em; }
+
+.duration-16 { min-height: 16em; }
+
+.duration-17 { min-height: 17em; }
+
+.duration-18 { min-height: 18em; }
+
+.duration-19 { min-height: 19em; }
+
+.duration-20 { min-height: 20em; }
+
+.duration-21 { min-height: 21em; }
+
+.duration-22 { min-height: 22em; }
+
+.duration-23 { min-height: 23em; }
+
+.duration-24 { min-height: 24em; }
 
 .ir { display: block; border: 0; text-indent: -999em; overflow: hidden; background-color: transparent; background-repeat: no-repeat; text-align: left; direction: ltr; *line-height: 0; }
 .ir br { display: none; }
