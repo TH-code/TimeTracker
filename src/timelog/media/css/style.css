@@ -109,7 +109,7 @@ h2 { color: #731630; }
 
 .description { color: white; }
 
-.timelog .timelog, .help .help, .settings .settings { color: #ff5434 !important; }
+.timelog .timelog, .report .report, .help .help, .settings .settings { color: #ff5434 !important; }
 
 .entry { background: #261822; color: white; border-top: 2px solid white; }
 

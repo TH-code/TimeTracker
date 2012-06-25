@@ -7,10 +7,7 @@ from config import jinja_environment
 from datetime import datetime
 from time import strptime
 
-def days_hours_minutes(td):
-    return td.days, td.seconds//3600, (td.seconds//60)%60
-
-class TimeTracker(webapp2.RequestHandler):
+class Timelog(webapp2.RequestHandler):
 
     def get(self):
         for d in demodata:
@@ -23,12 +20,13 @@ class TimeTracker(webapp2.RequestHandler):
                 d['start'] = True
 
         if users.get_current_user():
-            url = users.create_logout_url(self.request.uri)
+            home_url = '/'.join(self.request.uri.split('/')[:3])
+            url = users.create_logout_url(home_url)
             url_linktext = 'Logout'
             data = demodata
             template = jinja_environment.get_template('timelog.html')
         else:
-            url = users.create_login_url(self.request.uri)
+            url = users.create_login_url()
             url_linktext = 'Login'
             data = []
             template = jinja_environment.get_template('index.html')
@@ -56,16 +54,36 @@ class TimeTracker(webapp2.RequestHandler):
         pass
 
 
+class Report(webapp2.RequestHandler):
+
+    def get(self):
+        
+        if users.get_current_user():
+            home_url = '/'.join(self.request.uri.split('/')[:3])
+            url = users.create_logout_url(home_url)
+            url_linktext = 'Logout'
+            template = jinja_environment.get_template('report.html')
+        else:
+            url = users.create_login_url()
+            url_linktext = 'Login'
+            template = jinja_environment.get_template('index.html')
+
+        template_values = {'url': url,
+                           'url_linktext': url_linktext}
+        self.response.out.write(template.render(template_values))
+
+
 class Help(webapp2.RequestHandler):
 
     def get(self):
         
         if users.get_current_user():
-            url = users.create_logout_url(self.request.uri)
+            home_url = '/'.join(self.request.uri.split('/')[:3])
+            url = users.create_logout_url(home_url)
             url_linktext = 'Logout'
             template = jinja_environment.get_template('help.html')
         else:
-            url = users.create_login_url(self.request.uri)
+            url = users.create_login_url()
             url_linktext = 'Login'
             template = jinja_environment.get_template('index.html')
 
@@ -79,11 +97,12 @@ class Settings(webapp2.RequestHandler):
     def get(self):
         
         if users.get_current_user():
-            url = users.create_logout_url(self.request.uri)
+            home_url = '/'.join(self.request.uri.split('/')[:3])
+            url = users.create_logout_url(home_url)
             url_linktext = 'Logout'
             template = jinja_environment.get_template('settings.html')
         else:
-            url = users.create_login_url(self.request.uri)
+            url = users.create_login_url()
             url_linktext = 'Login'
             template = jinja_environment.get_template('index.html')
 
@@ -91,12 +110,14 @@ class Settings(webapp2.RequestHandler):
                            'url_linktext': url_linktext}
         self.response.out.write(template.render(template_values))
 
-app = webapp2.WSGIApplication([('/', TimeTracker),
+app = webapp2.WSGIApplication([('/', Timelog),
+                               ('/report', Report),
                                ('/help', Help),
                                ('/settings', Settings)],
                               debug=True)
 
-demodata = [{'activities': ['bavaria', 'com', 'meeting'],
+demodata = [
+ {'activities': ['bavaria', 'com', 'meeting'],
   'activity': 'bavaria :: com :: meeting',
   'date': '07-05-2011',
   'datetime': '07-05-2011 16:00',
