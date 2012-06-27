@@ -6,16 +6,14 @@
 {% block nav %}
     <nav>
         <ul>
-            <li><a class="timelog" href="/" title="Home">Timelog</a></li>
-            <li><a class="report" href="/report">Report</a></li>
-            <li><a class="help" href="/help"><h1>Help</h1></a></li>
-            <li><a class="settings" href="/settings">Settings</a></li>
-            <li><a href="{{ url }}">{{ url_linktext }}</a></li>
+            <li><a class="timelog" href="/timelog-static" title="Home">Timelog</a></li>
+            <li><a class="report" href="/report-static">Report</a></li>
+            <li><a class="help" href="/help-static"><h1>Help</h1></a></li>
+            <li><a class="settings" href="/settings-static">Settings</a></li>
+            <li><a href="/">Logout</a></li>
         </ul>
     </nav>
 {% endblock %}
-
-{% block logout %}<li><a href="{{ url }}">{{ url_linktext }}</a></li>{% endblock %}
 
 {% block content %}
 

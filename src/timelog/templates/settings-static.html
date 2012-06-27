@@ -6,16 +6,14 @@
 {% block nav %}
     <nav>
         <ul>
-            <li><a class="timelog" href="/">Timelog</a></li>
-            <li><a class="report" href="/report">Report</a></li>
-            <li><a class="help" href="/help">Help</a></li>
-            <li><a class="settings" href="/settings"><h1>Settings</h1></a></li>
-            <li><a href="{{ url }}">{{ url_linktext }}</a></li>
+            <li><a class="timelog" href="/timelog-static" title="Home">Timelog</a></li>
+            <li><a class="report" href="/report-static">Report</a></li>
+            <li><a class="help" href="/help-static">Help</a></li>
+            <li><a class="settings" href="/settings-static"><h1>Settings</h1></a></li>
+            <li><a href="/">Logout</a></li>
         </ul>
     </nav>
 {% endblock %}
-
-{% block logout %}<li><a href="{{ url }}">{{ url_linktext }}</a></li>{% endblock %}
 
 {% block content %}
     <form action="/settings" method="post">
@@ -24,7 +22,7 @@
             <br/>
             <p>
                 <label for="separator">separator</label>
-                <input name="separator" />
+                <input name="separator">
             </p>
             <p class="form-help">
                 Is used between main and sub activities to show where one ends
@@ -37,7 +35,7 @@
             </p>
             <p>
                 <label for="date_repr">Date representation</label>
-                <input name="date_repr" />
+                <input name="date_repr">
             </p>
             <p class="form-help">
                 <span class="todo">
@@ -49,7 +47,7 @@
             </p>
             <p>
                 <label for="time_repr">Time representation</label>
-                <input name="time_repr" />
+                <input name="time_repr">
             </p>
             <p class="form-help">
                 <span class="todo">
@@ -61,7 +59,7 @@
             </p>
             <p>
                 <label for="start_time">New day time</label>
-                <input name="start_time"/>
+                <input name="start_time">
             </p>
             <p class="form-help">
                 From what time will logging into Timelog create a new day start 
@@ -73,7 +71,7 @@
             </p>
             <p>
                 <label for="time_span">Time span</label>
-                <input name="start_time"/> <em>in months</em>
+                <input name="start_time"> <em>in months</em>
             </p>
             <p class="form-help">
                 All the activities within the set timespan will be used for 
@@ -83,4 +81,5 @@
             </p>
         </fieldset>
     </form>
+
 {% endblock %}

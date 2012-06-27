@@ -2,27 +2,116 @@
 
 {% block title %}TimeTracker{% endblock %}
 {% block bodyattr %} class="report"{% endblock %}
-{% block description %}{% endblock %}
+
+{% block nav %}
+    <nav>
+        <ul>
+            <li><a class="timelog" href="/">Timelog</a></li>
+            <li><a class="report" href="/report"><h1>Report</h1></a></li>
+            <li><a class="help" href="/help">Help</a></li>
+            <li><a class="settings" href="/settings">Settings</a></li>
+            <li><a href="{{ url }}">{{ url_linktext }}</a></li>
+        </ul>
+    </nav>
+{% endblock %}
+
 
 {% block logout %}<li><a href="{{ url }}">{{ url_linktext }}</a></li>{% endblock %}
 
 {% block content %}
-    
+    <form action="/report" method="post">
+        <fieldset>
+            <legend>Create report</legend>
+            <br/>
+            <p>
+                <label for="show">Show</label>
+                <select name="show">
+                    <option>weeks</option>
+                    <option>months</option>
+                </select>
+                <select name="start">
+                    <option>last week</option>
+                    <option>23</option>
+                    <option>22</option>
+                    <option>21</option>
+                    <option>20</option>
+                    <option>19</option>
+                </select>
+            </p>
+            <p class="form-help">
+                Only the weeks and months within now and the "from when" 
+                setting will be shown. You can change this on the 
+                <a href="/settings">settings</a> page.
+                <span class="todo">
+                    (The second dropdown is supposed to change when you set the
+                    first to months. This is not yet functional)
+                </span>
+            </p>
+            <p>
+                <label for="full">Show full activity</label>
+                <input name="full" type="checkbox" />
+            </p>
+            <p class="form-help">
+                By checking the full activity will show separator and all. If 
+                not checked, just the main activity (before the first 
+                separator) will be shown.
+            </p>
+        </fieldset>
+        <div class="controls"><input class="button" type="submit" value="Report"></div>
+    </form>
+    <table>
+        <thead>
+            <tr>
+              {% for h in headers %}
+                <th class="{{h.class}}">{{h.title}}</th>
+              {% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+          {%for activity in report %}
+            {% if activity != 'total' %}
+            <tr>
+                <th>{{activity}}</th>    
+              {% for day in days %}
+                <td class="{{day}}">{{report[activity][day]}}</td>
+              {% endfor %}       
+            </tr>
+            {% endif %}
+          {%endfor%}
+            <tr class="total">
+              <th>Total</th>    
+              {% for day in days %}
+                <td class="total">{{report.total[day]}}</td>
+              {% endfor %}   
+            </tr>
+        </tbody>        
+    </table>
+    <!--section class="stats">
+      {% for entry in data %}
+        <div class="entry{% if entry.weekday %} {{entry.weekday}}{% endif %}{% if entry.pause %} pause{% endif %}{% if entry.start %} start{% endif %}{% if entry.hours %} duration-{{entry.hours}}{% endif %}">
+          {% if entry.date and entry.start %}
+            <span class="date">{{entry.date}}</span> &mdash;
+          {% endif %}
+          {% if entry.time %}
+            <span class="time">{{entry.time}}</span>
+          {% endif %}
+          {% if entry.date or entry.time %}
+            <span class="line">&mdash;</span>
+          {% endif %}
+          {% if entry.activities %}
+            <span class="activity{% if entry.hidden %} hidden{% endif %}">
+              {% for activity in entry.activities %}
+                {{activity}}
+                {% if not loop.last %}<span class="devider">{{separator}}</span>{% endif %}
+              {% endfor %}
+            </span>
+          {% endif %}
+          
+          {% if entry.duration %}
+            <span class="duration">{{entry.duration}}</span>
+          {% endif %}
+        </div>
+      {% endfor %}
+    </section-->
 
-<!--  
-    {% for greeting in greetings %}
-      {% if greeting.author %}
-        <b>{{ greeting.author.nickname() }}</b> wrote:
-      {% else %}
-        An anonymous person wrote:
-      {% endif %}
-      <blockquote>{{ greeting.content|escape }}</blockquote>
-    {% endfor %}
-   <form action="/" method="post">
-      <div><textarea name="content" rows="3" cols="60"></textarea></div>
-      <div><input type="submit" value="Sign Guestbook"></div>
-    </form> 
--->
-
-    <a href="{{ url }}">{{ url_linktext }}</a>
 {% endblock %}

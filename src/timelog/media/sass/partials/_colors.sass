@@ -1,5 +1,5 @@
 html
-  background-color: lighten($grey, 40)
+  background-color: $grey2
 
 #content
   background: 
@@ -13,14 +13,17 @@ html
   background-color: $blue1
   +box-shadow(0 0 10px $red2)
 
-h1
+.timelog
   background: 
     image: image-url('icon.svg')
     position: top left
     repeat: no-repeat
-    size: 1.5em 1.5em
-  padding: 
-    left: 1.75em
+    size: 85px 85px
+  margin-left: -100px
+  margin-top: -40px
+  padding-bottom: 30px
+  padding-left: 100px
+  padding-top: 40px
 
 header
   a
@@ -41,40 +44,110 @@ h2
   border:
     top: 2px solid #fff
 
-.pause
+.break
   color: rgba(255, 255, 255, .7)
 
 .mon
-  .date
+  thead &, .total &, .date
     color: $grey
   background: $grey
 .tue
-  .date
+  thead &, .total &, .date
     color: $red2
   background: $red2
 .wed
-  .date
+  thead &, .total &, .date
     color: $red3
   background: $red3
 .thu
-  .date
+  thead &, .total &,.date
     color: $red4
   background: $red4
 .fri
-  .date
+  thead &, .total &, .date
     color: $red5
   background: $red5
 .sat
-  .date
+  thead &, .total &, .date
     color: $blue3
   background: $blue3
 .sun
-  .date
+  thead &, .total &, .date 
     color: $blue2
   background: $blue2
 
+td
+  color: #fff
+
+.total
+  color: $blue1
+
+.report
+  th
+    background-color: transparent
+    border-color: transparent
+  td
+    border-bottom: 2px solid #fff
+
+td.total
+  background-color: #fff
+  
 .start, .date, .time, .line
   color: $red1
   background: transparent
 
-  
+.button
+  background-color: $blue2
+  +filter-gradient(#08153a, #08153a, vertical)
+  +background-image(linear-gradient(top, $blue1 16%,#ffffff 27%,$blue4 29%,$blue1 87%))
+  +link-colors(#fff !important, $red5 !important)
+  +text-shadow(0 0 2px $blue1, 0 0 2px $blue1, 0 0 5px $blue1, 0 0 10px $blue1)
+  +box-shadow(2px 3px 5px $red1, 0 0 3px $blue2 inset)
+  border: 1px solid $blue1
+  &:hover
+    +box-shadow(1px 2px 3px $red1, 0 0 3px $blue2 inset)
+    +text-shadow(0 0 2px $red3, 0 0 2px $red3, 0 0 5px $red2, 0 0 10px $red1)
+
+.new, form
+  .button
+    background-color: $blue4
+    +filter-gradient(#08153a, #08153a, vertical)
+    +background-image(linear-gradient(top, $grey2 16%,#ffffff 27%,$grey 29%, $grey2 87%))
+    +link-colors($red1 !important, #000 !important)
+    +box-shadow(2px 3px 5px $red1, 0 0 3px #fff inset)
+    +text-shadow(0 0 2px #fff, 0 0 2px $grey2, 0 0 5px $grey2, 0 0 10px $grey)
+    border: 1px solid $blue1
+    &:hover
+      +text-shadow(0 0 2px $grey2, 0 0 2px $grey2, 0 0 5px #fff)
+      +background-image(linear-gradient(top, $grey2 16%,#ffffff 27%,$grey 29%, $grey2 87%))
+
+.form-help
+  color: $blue3
+
+.timelog, .report, .settings
+  .form-help
+    color: $grey
+    a
+      +link-colors($red5, #fff)
+
+.edit
+  a
+    +link-colors(#fff)
+
+.start
+  .edit
+    a
+      +link-colors($blue1)
+
+.report, .settings
+  form
+    @extend .new
+    background: $red2
+    border:
+      top: 2px solid #fff
+      bottom: 2px solid #fff
+    color: #fff
+    padding: 1em !important
+.todo
+  font-weight: bold
+  color: $red4 !important

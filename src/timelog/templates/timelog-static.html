@@ -1,0 +1,2900 @@
+{% extends "base.html" %}
+
+{% block title %}Timelog{% endblock %}
+{% block bodyattr %} class="timelog"{% endblock %}
+
+{% block nav %}
+    <nav>
+        <ul>
+            <li><a class="timelog" href="/timelog-static" title="Home"><h1>Timelog</h1></a></li>
+            <li><a class="report" href="/report-static">Report</a></li>
+            <li><a class="help" href="/help-static">Help</a></li>
+            <li><a class="settings" href="/settings-static">Settings</a></li>
+            <li><a href="/">Logout</a></li>
+        </ul>
+    </nav>
+{% endblock %}
+
+{% block content %}
+
+    <p>
+        <span class="todo">
+            First use pointers still need to be implemented.
+        </span>
+    </p>    
+    <div class="new">
+        <div class="entry wed">
+          
+            <span class="time">00:31</span>
+            <span class="line">—</span>
+          
+          
+            <span class="duration">Duration: 00:31</span>
+          
+            <form action="/" method="post">
+                <fieldset>
+                    <legend>Create new Activity</legend>
+                    <br/>
+                    <p>
+                        <label for="new">New activity</label>
+                        <input name="new" size="55">
+                    </p>
+                    
+                    <p>
+                        <label for="existing">Existing activity</label>
+                        <select name="existing">
+                          
+                            <option>at | issue 323</option>
+                          
+                            <option>at | issue 549</option>
+                          
+                            <option>at | issue 566</option>
+                          
+                            <option>at | issue 593</option>
+                          
+                            <option>at | issue 612</option>
+                          
+                            <option>at | issue 612 en 613</option>
+                          
+                            <option>at | issue 613</option>
+                          
+                            <option>at | issue 624</option>
+                          
+                            <option>at | overleg</option>
+                          
+                            <option>bavaria | com | background blue</option>
+                          
+                            <option>bavaria | com | beer selector</option>
+                          
+                            <option>bavaria | com | demo</option>
+                          
+                            <option>bavaria | com | demo and research</option>
+                          
+                            <option>bavaria | com | functionaliteit</option>
+                          
+                            <option>bavaria | com | glow</option>
+                          
+                            <option>bavaria | com | issue 101</option>
+                          
+                            <option>bavaria | com | issue 102</option>
+                          
+                            <option>bavaria | com | issue 105</option>
+                          
+                            <option>bavaria | com | issue 85</option>
+                          
+                            <option>bavaria | com | issue 89</option>
+                          
+                            <option>bavaria | com | issue 91</option>
+                          
+                            <option>bavaria | com | issue 92</option>
+                          
+                            <option>bavaria | com | issue 93</option>
+                          
+                            <option>bavaria | com | issue 94</option>
+                          
+                            <option>bavaria | com | issue 98</option>
+                          
+                            <option>bavaria | com | issue 99</option>
+                          
+                            <option>bavaria | com | issue pubfacts</option>
+                          
+                            <option>bavaria | com | meeting</option>
+                          
+                            <option>bavaria | com | plone patch</option>
+                          
+                            <option>bavaria | com | pub facts</option>
+                          
+                            <option>bavaria | com | pubfacts</option>
+                          
+                            <option>bavaria | com | quality</option>
+                          
+                            <option>bavaria | com | release, overleg</option>
+                          
+                            <option>bavaria | com | release/check</option>
+                          
+                            <option>bavaria | com | translation</option>
+                          
+                            <option>bavaria | com | tricoid link and rotation</option>
+                          
+                            <option>bavaria | com | tube promo fix</option>
+                          
+                            <option>bavaria | com | uitzoeken WebGL/Java Applet</option>
+                          
+                            <option>bavaria | com | update plone, add audiopool, add patches</option>
+                          
+                            <option>diner **</option>
+                          
+                            <option>fenelab | additional styling</option>
+                          
+                            <option>fenelab | style fix and release</option>
+                          
+                            <option>floravontuur | issues</option>
+                          
+                            <option>knmp | nl | login removal</option>
+                          
+                            <option>knmp | nl | script</option>
+                          
+                            <option>knmp | sfk | design integration</option>
+                          
+                            <option>knmp | sfk | meeting</option>
+                          
+                            <option>lunch **</option>
+                          
+                            <option>nuffic | issues</option>
+                          
+                            <option>nuffic | plone patch</option>
+                          
+                            <option>pareto | feestdag</option>
+                          
+                            <option>start</option>
+                          
+                            <option>vvv | patch</option>
+                          
+                            <option>vvv | plone patch</option>
+                          
+                            <option>zeelandia | sync</option>
+                          
+                        </select>
+                    </p>
+                    
+                    <p class="form-help">
+                        Either select an old activity or enter a new one. The
+                        new activity field always trumps the existing, so only 
+                        if the new activity field is empty will the selection 
+                        in the existing activity dropdown be used.
+                        <span class="todo">
+                            Does not feel completly right yet, 
+                            need to look for a better solution.
+                        </span>
+                    </p>
+                    <p>
+                        <label for="break">Break</label>
+                        <input name="break" type="checkbox"> <span class="form-help">breaktime is not counted</span>
+                    </p>
+                </fieldset>
+                <div class="controls"><input class="button" value="Track" type="submit"></div>
+            </form>
+        </div>
+    </div>
+
+    <section class="log">
+      
+        <div class="entry tue duration-8">
+          
+          
+            <span class="time">16:00</span>
+          
+          
+            <span class="line">—</span>
+          
+          
+            <span class="activity">
+              
+                bavaria
+                <span class="devider"> | </span>
+              
+                com
+                <span class="devider"> | </span>
+              
+                meeting
+                
+              
+            </span>
+          
+            <span class="edit">
+                &nbsp;|&nbsp;<a href="/?edit=0">edit</a>
+            </span>
+          
+            <span class="duration">Duration: 8:00</span>
+          
+        </div>
+      
+        <div class="entry tue start">
+          
+            <span class="date">tue – 07-05-2011</span> —
+          
+          
+            <span class="time">08:00</span>
+          
+          
+            <span class="line">—</span>
+          
+          
+            <span class="activity">
+              
+                start
+                
+              
+            </span>
+          
+            <span class="edit">
+                <a href="/?edit=1">edit</a>
+            </span>
+          
+        </div>
+      
+        <div class="entry mon duration-8">
+          
+          
+            <span class="time">17:00</span>
+          
+          
+            <span class="line">—</span>
+          
+          
+            <span class="activity">
+              
+                knmp
+                <span class="devider"> | </span>
+              
+                sfk
+                <span class="devider"> | </span>
+              
+                design integration
+                
+              
+            </span>
+          
+            <span class="edit">
+                &nbsp;|&nbsp;<a href="/?edit=2">edit</a>
+            </span>
+          
+            <span class="duration">Duration: 8:00</span>
+          
+        </div>
+      
+        <div class="entry mon start">
+          
+            <span class="date">mon – 07-04-2011</span> —
+          
+          
+            <span class="time">09:00</span>
+          
+          
+            <span class="line">—</span>
+          
+          
+            <span class="activity">
+              
+                start
+                
+              
+            </span>
+          
+            <span class="edit">
+                <a href="/?edit=3">edit</a>
+            </span>
+          
+        </div>
+      
+        <div class="entry fri duration-8">
+          
+          
+            <span class="time">17:00</span>
+          
+          
+            <span class="line">—</span>
+          
+          
+            <span class="activity">
+              
+                knmp
+                <span class="devider"> | </span>
+              
+                sfk
+                <span class="devider"> | </span>
+              
+                design integration
+                
+              
+            </span>
+          
+            <span class="edit">
+                &nbsp;|&nbsp;<a href="/?edit=4">edit</a>
+            </span>
+          
+            <span class="duration">Duration: 8:00</span>
+          
+        </div>
+      
+        <div class="entry fri start">
+          
+            <span class="date">fri – 07-01-2011</span> —
+          
+          
+            <span class="time">09:00</span>
+          
+          
+            <span class="line">—</span>
+          
+          
+            <span class="activity">
+              
+                start
+                
+              
+            </span>
+          
+            <span class="edit">
+                <a href="/?edit=5">edit</a>
+            </span>
+          
+        </div>
+      
+        <div class="entry thu duration-3">
+          
+          
+            <span class="time">22:00</span>
+          
+          
+            <span class="line">—</span>
+          
+          
+            <span class="activity">
+              
+                bavaria
+                <span class="devider"> | </span>
+              
+                com
+                <span class="devider"> | </span>
+              
+                release/check
+                
+              
+            </span>
+          
+            <span class="edit">
+                &nbsp;|&nbsp;<a href="/?edit=6">edit</a>
+            </span>
+          
+            <span class="duration">Duration: 3:00</span>
+          
+        </div>
+      
+        <div class="entry thu break">
+          
+          
+            <span class="time">19:00</span>
+          
+          
+            <span class="line">—</span>
+          
+          
+            <span class="activity">
+              
+                diner **
+                
+              
+            </span>
+          
+            <span class="edit">
+                &nbsp;|&nbsp;<a href="/?edit=7">edit</a>
+            </span>
+          
+        </div>
+      
+        <div class="entry thu duration-1">
+          
+          
+            <span class="time">17:45</span>
+          
+          
+            <span class="line">—</span>
+          
+          
+            <span class="activity">
+              
+                bavaria
+                <span class="devider"> | </span>
+              
+                com
+                <span class="devider"> | </span>
+              
+                issue 102
+                
+              
+            </span>
+          
+            <span class="edit">
+                &nbsp;|&nbsp;<a href="/?edit=8">edit</a>
+            </span>
+          
+            <span class="duration">Duration: 1:00</span>
+          
+        </div>
+      
+        <div class="entry thu duration-1">
+          
+          
+            <span class="time">16:45</span>
+          
+          
+            <span class="line">—</span>
+          
+          
+            <span class="activity">
+              
+                bavaria
+                <span class="devider"> | </span>
+              
+                com
+                <span class="devider"> | </span>
+              
+                issue 101
+                
+              
+            </span>
+          
+            <span class="edit">
+                &nbsp;|&nbsp;<a href="/?edit=9">edit</a>
+            </span>
+          
+            <span class="duration">Duration: 1:00</span>
+          
+        </div>
+      
+        <div class="entry thu duration-0">
+          
+          
+            <span class="time">15:45</span>
+          
+          
+            <span class="line">—</span>
+          
+          
+            <span class="activity">
+              
+                bavaria
+                <span class="devider"> | </span>
+              
+                com
+                <span class="devider"> | </span>
+              
+                issue 99
+                
+              
+            </span>
+          
+            <span class="edit">
+                &nbsp;|&nbsp;<a href="/?edit=10">edit</a>
+            </span>
+          
+            <span class="duration">Duration: 0:30</span>
+          
+        </div>
+      
+        <div class="entry thu duration-1">
+          
+          
+            <span class="time">15:15</span>
+          
+          
+            <span class="line">—</span>
+          
+          
+            <span class="activity">
+              
+                bavaria
+                <span class="devider"> | </span>
+              
+                com
+                <span class="devider"> | </span>
+              
+                issue 98
+                
+              
+            </span>
+          
+            <span class="edit">
+                &nbsp;|&nbsp;<a href="/?edit=11">edit</a>
+            </span>
+          
+            <span class="duration">Duration: 1:00</span>
+          
+        </div>
+      
+        <div class="entry thu duration-1">
+          
+          
+            <span class="time">14:15</span>
+          
+          
+            <span class="line">—</span>
+          
+          
+            <span class="activity">
+              
+                bavaria
+                <span class="devider"> | </span>
+              
+                com
+                <span class="devider"> | </span>
+              
+                issue 93
+                
+              
+            </span>
+          
+            <span class="edit">
+                &nbsp;|&nbsp;<a href="/?edit=12">edit</a>
+            </span>
+          
+            <span class="duration">Duration: 1:30</span>
+          
+        </div>
+      
+        <div class="entry thu break">
+          
+          
+            <span class="time">12:45</span>
+          
+          
+            <span class="line">—</span>
+          
+          
+            <span class="activity">
+              
+                lunch **
+                
+              
+            </span>
+          
+            <span class="edit">
+                &nbsp;|&nbsp;<a href="/?edit=13">edit</a>
+            </span>
+          
+        </div>
+      
+        <div class="entry thu duration-1">
+          
+          
+            <span class="time">12:30</span>
+          
+          
+            <span class="line">—</span>
+          
+          
+            <span class="activity">
+              
+                bavaria
+                <span class="devider"> | </span>
+              
+                com
+                <span class="devider"> | </span>
+              
+                issue 93
+                
+              
+            </span>
+          
+            <span class="edit">
+                &nbsp;|&nbsp;<a href="/?edit=14">edit</a>
+            </span>
+          
+            <span class="duration">Duration: 1:00</span>
+          
+        </div>
+      
+        <div class="entry thu duration-0">
+          
+          
+            <span class="time">11:30</span>
+          
+          
+            <span class="line">—</span>
+          
+          
+            <span class="activity">
+              
+                bavaria
+                <span class="devider"> | </span>
+              
+                com
+                <span class="devider"> | </span>
+              
+                issue 92
+                
+              
+            </span>
+          
+            <span class="edit">
+                &nbsp;|&nbsp;<a href="/?edit=15">edit</a>
+            </span>
+          
+            <span class="duration">Duration: 0:30</span>
+          
+        </div>
+      
+        <div class="entry thu duration-1">
+          
+          
+            <span class="time">11:00</span>
+          
+          
+            <span class="line">—</span>
+          
+          
+            <span class="activity">
+              
+                bavaria
+                <span class="devider"> | </span>
+              
+                com
+                <span class="devider"> | </span>
+              
+                issue 91
+                
+              
+            </span>
+          
+            <span class="edit">
+                &nbsp;|&nbsp;<a href="/?edit=16">edit</a>
+            </span>
+          
+            <span class="duration">Duration: 1:00</span>
+          
+        </div>
+      
+        <div class="entry thu duration-1">
+          
+          
+            <span class="time">10:00</span>
+          
+          
+            <span class="line">—</span>
+          
+          
+            <span class="activity">
+              
+                bavaria
+                <span class="devider"> | </span>
+              
+                com
+                <span class="devider"> | </span>
+              
+                issue 85
+                
+              
+            </span>
+          
+            <span class="edit">
+                &nbsp;|&nbsp;<a href="/?edit=17">edit</a>
+            </span>
+          
+            <span class="duration">Duration: 1:00</span>
+          
+        </div>
+      
+        <div class="entry thu start">
+          
+            <span class="date">thu – 06-30-2011</span> —
+          
+          
+            <span class="time">09:00</span>
+          
+          
+            <span class="line">—</span>
+          
+          
+            <span class="activity">
+              
+                start
+                
+              
+            </span>
+          
+            <span class="edit">
+                <a href="/?edit=18">edit</a>
+            </span>
+          
+        </div>
+      
+        <div class="entry wed duration-0">
+          
+          
+            <span class="time">17:22</span>
+          
+          
+            <span class="line">—</span>
+          
+          
+            <span class="activity">
+              
+                bavaria
+                <span class="devider"> | </span>
+              
+                com
+                <span class="devider"> | </span>
+              
+                tube promo fix
+                
+              
+            </span>
+          
+            <span class="edit">
+                &nbsp;|&nbsp;<a href="/?edit=19">edit</a>
+            </span>
+          
+            <span class="duration">Duration: 0:45</span>
+          
+        </div>
+      
+        <div class="entry wed duration-2">
+          
+          
+            <span class="time">16:37</span>
+          
+          
+            <span class="line">—</span>
+          
+          
+            <span class="activity">
+              
+                bavaria
+                <span class="devider"> | </span>
+              
+                com
+                <span class="devider"> | </span>
+              
+                glow
+                
+              
+            </span>
+          
+            <span class="edit">
+                &nbsp;|&nbsp;<a href="/?edit=20">edit</a>
+            </span>
+          
+            <span class="duration">Duration: 2:22</span>
+          
+        </div>
+      
+        <div class="entry wed duration-2">
+          
+          
+            <span class="time">14:15</span>
+          
+          
+            <span class="line">—</span>
+          
+          
+            <span class="activity">
+              
+                bavaria
+                <span class="devider"> | </span>
+              
+                com
+                <span class="devider"> | </span>
+              
+                pubfacts
+                
+              
+            </span>
+          
+            <span class="edit">
+                &nbsp;|&nbsp;<a href="/?edit=21">edit</a>
+            </span>
+          
+            <span class="duration">Duration: 2:00</span>
+          
+        </div>
+      
+        <div class="entry wed duration-2">
+          
+          
+            <span class="time">12:15</span>
+          
+          
+            <span class="line">—</span>
+          
+          
+            <span class="activity">
+              
+                bavaria
+                <span class="devider"> | </span>
+              
+                com
+                <span class="devider"> | </span>
+              
+                update plone, add audiopool, add patches
+                
+              
+            </span>
+          
+            <span class="edit">
+                &nbsp;|&nbsp;<a href="/?edit=22">edit</a>
+            </span>
+          
+            <span class="duration">Duration: 2:00</span>
+          
+        </div>
+      
+        <div class="entry wed duration-1">
+          
+          
+            <span class="time">10:15</span>
+          
+          
+            <span class="line">—</span>
+          
+          
+            <span class="activity">
+              
+                bavaria
+                <span class="devider"> | </span>
+              
+                com
+                <span class="devider"> | </span>
+              
+                functionaliteit
+                
+              
+            </span>
+          
+            <span class="edit">
+                &nbsp;|&nbsp;<a href="/?edit=23">edit</a>
+            </span>
+          
+            <span class="duration">Duration: 1:01</span>
+          
+        </div>
+      
+        <div class="entry wed start">
+          
+            <span class="date">wed – 06-29-2011</span> —
+          
+          
+            <span class="time">09:14</span>
+          
+          
+            <span class="line">—</span>
+          
+          
+            <span class="activity">
+              
+                start
+                
+              
+            </span>
+          
+            <span class="edit">
+                <a href="/?edit=24">edit</a>
+            </span>
+          
+        </div>
+      
+        <div class="entry tue duration-0">
+          
+          
+            <span class="time">21:00</span>
+          
+          
+            <span class="line">—</span>
+          
+          
+            <span class="activity">
+              
+                vvv
+                <span class="devider"> | </span>
+              
+                plone patch
+                
+              
+            </span>
+          
+            <span class="edit">
+                &nbsp;|&nbsp;<a href="/?edit=25">edit</a>
+            </span>
+          
+            <span class="duration">Duration: 0:30</span>
+          
+        </div>
+      
+        <div class="entry tue duration-1">
+          
+          
+            <span class="time">20:30</span>
+          
+          
+            <span class="line">—</span>
+          
+          
+            <span class="activity">
+              
+                nuffic
+                <span class="devider"> | </span>
+              
+                plone patch
+                
+              
+            </span>
+          
+            <span class="edit">
+                &nbsp;|&nbsp;<a href="/?edit=26">edit</a>
+            </span>
+          
+            <span class="duration">Duration: 1:00</span>
+          
+        </div>
+      
+        <div class="entry tue duration-0">
+          
+          
+            <span class="time">19:30</span>
+          
+          
+            <span class="line">—</span>
+          
+          
+            <span class="activity">
+              
+                bavaria
+                <span class="devider"> | </span>
+              
+                com
+                <span class="devider"> | </span>
+              
+                plone patch
+                
+              
+            </span>
+          
+            <span class="edit">
+                &nbsp;|&nbsp;<a href="/?edit=27">edit</a>
+            </span>
+          
+            <span class="duration">Duration: 0:30</span>
+          
+        </div>
+      
+        <div class="entry tue break">
+          
+          
+            <span class="time">19:00</span>
+          
+          
+            <span class="line">—</span>
+          
+          
+            <span class="activity">
+              
+                diner **
+                
+              
+            </span>
+          
+            <span class="edit">
+                &nbsp;|&nbsp;<a href="/?edit=28">edit</a>
+            </span>
+          
+        </div>
+      
+        <div class="entry tue duration-9">
+          
+          
+            <span class="time">18:30</span>
+          
+          
+            <span class="line">—</span>
+          
+          
+            <span class="activity">
+              
+                bavaria
+                <span class="devider"> | </span>
+              
+                com
+                <span class="devider"> | </span>
+              
+                demo
+                
+              
+            </span>
+          
+            <span class="edit">
+                &nbsp;|&nbsp;<a href="/?edit=29">edit</a>
+            </span>
+          
+            <span class="duration">Duration: 9:30</span>
+          
+        </div>
+      
+        <div class="entry tue start">
+          
+            <span class="date">tue – 06-28-2011</span> —
+          
+          
+            <span class="time">09:00</span>
+          
+          
+            <span class="line">—</span>
+          
+          
+            <span class="activity">
+              
+                start
+                
+              
+            </span>
+          
+            <span class="edit">
+                <a href="/?edit=30">edit</a>
+            </span>
+          
+        </div>
+      
+        <div class="entry mon duration-6">
+          
+          
+            <span class="time">17:28</span>
+          
+          
+            <span class="line">—</span>
+          
+          
+            <span class="activity">
+              
+                bavaria
+                <span class="devider"> | </span>
+              
+                com
+                <span class="devider"> | </span>
+              
+                demo and research
+                
+              
+            </span>
+          
+            <span class="edit">
+                &nbsp;|&nbsp;<a href="/?edit=31">edit</a>
+            </span>
+          
+            <span class="duration">Duration: 6:03</span>
+          
+        </div>
+      
+        <div class="entry mon duration-1">
+          
+          
+            <span class="time">11:25</span>
+          
+          
+            <span class="line">—</span>
+          
+          
+            <span class="activity">
+              
+                knmp
+                <span class="devider"> | </span>
+              
+                nl
+                <span class="devider"> | </span>
+              
+                script
+                
+              
+            </span>
+          
+            <span class="edit">
+                &nbsp;|&nbsp;<a href="/?edit=32">edit</a>
+            </span>
+          
+            <span class="duration">Duration: 1:42</span>
+          
+        </div>
+      
+        <div class="entry mon start">
+          
+            <span class="date">mon – 06-27-2011</span> —
+          
+          
+            <span class="time">09:43</span>
+          
+          
+            <span class="line">—</span>
+          
+          
+            <span class="activity">
+              
+                start
+                
+              
+            </span>
+          
+            <span class="edit">
+                <a href="/?edit=33">edit</a>
+            </span>
+          
+        </div>
+      
+        <div class="entry thu duration-5">
+          
+          
+            <span class="time">15:13</span>
+          
+          
+            <span class="line">—</span>
+          
+          
+            <span class="activity">
+              
+                at
+                <span class="devider"> | </span>
+              
+                issue 612 en 613
+                
+              
+            </span>
+          
+            <span class="edit">
+                &nbsp;|&nbsp;<a href="/?edit=34">edit</a>
+            </span>
+          
+            <span class="duration">Duration: 5:13</span>
+          
+        </div>
+      
+        <div class="entry thu duration-1">
+          
+          
+            <span class="time">10:00</span>
+          
+          
+            <span class="line">—</span>
+          
+          
+            <span class="activity">
+              
+                bavaria
+                <span class="devider"> | </span>
+              
+                com
+                <span class="devider"> | </span>
+              
+                uitzoeken WebGL/Java Applet
+                
+              
+            </span>
+          
+            <span class="edit">
+                &nbsp;|&nbsp;<a href="/?edit=35">edit</a>
+            </span>
+          
+            <span class="duration">Duration: 1:00</span>
+          
+        </div>
+      
+        <div class="entry thu start">
+          
+            <span class="date">thu – 06-23-2011</span> —
+          
+          
+            <span class="time">09:00</span>
+          
+          
+            <span class="line">—</span>
+          
+          
+            <span class="activity">
+              
+                start
+                
+              
+            </span>
+          
+            <span class="edit">
+                <a href="/?edit=36">edit</a>
+            </span>
+          
+        </div>
+      
+        <div class="entry wed duration-4">
+          
+          
+            <span class="time">17:15</span>
+          
+          
+            <span class="line">—</span>
+          
+          
+            <span class="activity">
+              
+                knmp
+                <span class="devider"> | </span>
+              
+                nl
+                <span class="devider"> | </span>
+              
+                login removal
+                
+              
+            </span>
+          
+            <span class="edit">
+                &nbsp;|&nbsp;<a href="/?edit=37">edit</a>
+            </span>
+          
+            <span class="duration">Duration: 4:00</span>
+          
+        </div>
+      
+        <div class="entry wed duration-0">
+          
+          
+            <span class="time">13:15</span>
+          
+          
+            <span class="line">—</span>
+          
+          
+            <span class="activity">
+              
+                bavaria
+                <span class="devider"> | </span>
+              
+                com
+                <span class="devider"> | </span>
+              
+                release, overleg
+                
+              
+            </span>
+          
+            <span class="edit">
+                &nbsp;|&nbsp;<a href="/?edit=38">edit</a>
+            </span>
+          
+            <span class="duration">Duration: 0:30</span>
+          
+        </div>
+      
+        <div class="entry wed break">
+          
+          
+            <span class="time">12:45</span>
+          
+          
+            <span class="line">—</span>
+          
+          
+            <span class="activity">
+              
+                lunch **
+                
+              
+            </span>
+          
+            <span class="edit">
+                &nbsp;|&nbsp;<a href="/?edit=39">edit</a>
+            </span>
+          
+        </div>
+      
+        <div class="entry wed duration-3">
+          
+          
+            <span class="time">12:30</span>
+          
+          
+            <span class="line">—</span>
+          
+          
+            <span class="activity">
+              
+                bavaria
+                <span class="devider"> | </span>
+              
+                com
+                <span class="devider"> | </span>
+              
+                release, overleg
+                
+              
+            </span>
+          
+            <span class="edit">
+                &nbsp;|&nbsp;<a href="/?edit=40">edit</a>
+            </span>
+          
+            <span class="duration">Duration: 3:30</span>
+          
+        </div>
+      
+        <div class="entry wed start">
+          
+            <span class="date">wed – 06-22-2011</span> —
+          
+          
+            <span class="time">09:00</span>
+          
+          
+            <span class="line">—</span>
+          
+          
+            <span class="activity">
+              
+                start
+                
+              
+            </span>
+          
+            <span class="edit">
+                <a href="/?edit=41">edit</a>
+            </span>
+          
+        </div>
+      
+        <div class="entry tue duration-3">
+          
+          
+            <span class="time">23:59</span>
+          
+          
+            <span class="line">—</span>
+          
+          
+            <span class="activity">
+              
+                bavaria
+                <span class="devider"> | </span>
+              
+                com
+                <span class="devider"> | </span>
+              
+                issue pubfacts
+                
+              
+            </span>
+          
+            <span class="edit">
+                &nbsp;|&nbsp;<a href="/?edit=42">edit</a>
+            </span>
+          
+            <span class="duration">Duration: 3:44</span>
+          
+        </div>
+      
+        <div class="entry tue break">
+          
+          
+            <span class="time">20:15</span>
+          
+          
+            <span class="line">—</span>
+          
+          
+            <span class="activity">
+              
+                diner **
+                
+              
+            </span>
+          
+            <span class="edit">
+                &nbsp;|&nbsp;<a href="/?edit=43">edit</a>
+            </span>
+          
+        </div>
+      
+        <div class="entry tue duration-5">
+          
+          
+            <span class="time">18:15</span>
+          
+          
+            <span class="line">—</span>
+          
+          
+            <span class="activity">
+              
+                bavaria
+                <span class="devider"> | </span>
+              
+                com
+                <span class="devider"> | </span>
+              
+                issue pubfacts
+                
+              
+            </span>
+          
+            <span class="edit">
+                &nbsp;|&nbsp;<a href="/?edit=44">edit</a>
+            </span>
+          
+            <span class="duration">Duration: 5:30</span>
+          
+        </div>
+      
+        <div class="entry tue break">
+          
+          
+            <span class="time">12:45</span>
+          
+          
+            <span class="line">—</span>
+          
+          
+            <span class="activity">
+              
+                lunch **
+                
+              
+            </span>
+          
+            <span class="edit">
+                &nbsp;|&nbsp;<a href="/?edit=45">edit</a>
+            </span>
+          
+        </div>
+      
+        <div class="entry tue duration-3">
+          
+          
+            <span class="time">12:30</span>
+          
+          
+            <span class="line">—</span>
+          
+          
+            <span class="activity">
+              
+                bavaria
+                <span class="devider"> | </span>
+              
+                com
+                <span class="devider"> | </span>
+              
+                issue pubfacts
+                
+              
+            </span>
+          
+            <span class="edit">
+                &nbsp;|&nbsp;<a href="/?edit=46">edit</a>
+            </span>
+          
+            <span class="duration">Duration: 3:15</span>
+          
+        </div>
+      
+        <div class="entry tue start">
+          
+            <span class="date">tue – 06-21-2011</span> —
+          
+          
+            <span class="time">09:15</span>
+          
+          
+            <span class="line">—</span>
+          
+          
+            <span class="activity">
+              
+                start
+                
+              
+            </span>
+          
+            <span class="edit">
+                <a href="/?edit=47">edit</a>
+            </span>
+          
+        </div>
+      
+        <div class="entry mon duration-5">
+          
+          
+            <span class="time">16:07</span>
+          
+          
+            <span class="line">—</span>
+          
+          
+            <span class="activity">
+              
+                bavaria
+                <span class="devider"> | </span>
+              
+                com
+                <span class="devider"> | </span>
+              
+                issue 91
+                
+              
+            </span>
+          
+            <span class="edit">
+                &nbsp;|&nbsp;<a href="/?edit=48">edit</a>
+            </span>
+          
+            <span class="duration">Duration: 5:19</span>
+          
+        </div>
+      
+        <div class="entry mon duration-1">
+          
+          
+            <span class="time">10:48</span>
+          
+          
+            <span class="line">—</span>
+          
+          
+            <span class="activity">
+              
+                knmp
+                <span class="devider"> | </span>
+              
+                sfk
+                <span class="devider"> | </span>
+              
+                meeting
+                
+              
+            </span>
+          
+            <span class="edit">
+                &nbsp;|&nbsp;<a href="/?edit=49">edit</a>
+            </span>
+          
+            <span class="duration">Duration: 1:08</span>
+          
+        </div>
+      
+        <div class="entry mon duration-0">
+          
+          
+            <span class="time">09:40</span>
+          
+          
+            <span class="line">—</span>
+          
+          
+            <span class="activity">
+              
+                zeelandia
+                <span class="devider"> | </span>
+              
+                sync
+                
+              
+            </span>
+          
+            <span class="edit">
+                &nbsp;|&nbsp;<a href="/?edit=50">edit</a>
+            </span>
+          
+            <span class="duration">Duration: 0:24</span>
+          
+        </div>
+      
+        <div class="entry mon start">
+          
+            <span class="date">mon – 06-20-2011</span> —
+          
+          
+            <span class="time">09:16</span>
+          
+          
+            <span class="line">—</span>
+          
+          
+            <span class="activity">
+              
+                start
+                
+              
+            </span>
+          
+            <span class="edit">
+                <a href="/?edit=51">edit</a>
+            </span>
+          
+        </div>
+      
+        <div class="entry fri duration-0">
+          
+          
+            <span class="time">20:07</span>
+          
+          
+            <span class="line">—</span>
+          
+          
+            <span class="activity">
+              
+                bavaria
+                <span class="devider"> | </span>
+              
+                com
+                <span class="devider"> | </span>
+              
+                issue 94
+                
+              
+            </span>
+          
+            <span class="edit">
+                &nbsp;|&nbsp;<a href="/?edit=52">edit</a>
+            </span>
+          
+            <span class="duration">Duration: 0:00</span>
+          
+        </div>
+      
+        <div class="entry fri duration-7">
+          
+          
+            <span class="time">20:07</span>
+          
+          
+            <span class="line">—</span>
+          
+          
+            <span class="activity">
+              
+                bavaria
+                <span class="devider"> | </span>
+              
+                com
+                <span class="devider"> | </span>
+              
+                issue 89
+                
+              
+            </span>
+          
+            <span class="edit">
+                &nbsp;|&nbsp;<a href="/?edit=53">edit</a>
+            </span>
+          
+            <span class="duration">Duration: 7:52</span>
+          
+        </div>
+      
+        <div class="entry fri duration-0">
+          
+          
+            <span class="time">12:15</span>
+          
+          
+            <span class="line">—</span>
+          
+          
+            <span class="activity">
+              
+                bavaria
+                <span class="devider"> | </span>
+              
+                com
+                <span class="devider"> | </span>
+              
+                issue 91
+                
+              
+            </span>
+          
+            <span class="edit">
+                &nbsp;|&nbsp;<a href="/?edit=54">edit</a>
+            </span>
+          
+            <span class="duration">Duration: 0:30</span>
+          
+        </div>
+      
+        <div class="entry fri duration-1">
+          
+          
+            <span class="time">11:45</span>
+          
+          
+            <span class="line">—</span>
+          
+          
+            <span class="activity">
+              
+                bavaria
+                <span class="devider"> | </span>
+              
+                com
+                <span class="devider"> | </span>
+              
+                issue 89
+                
+              
+            </span>
+          
+            <span class="edit">
+                &nbsp;|&nbsp;<a href="/?edit=55">edit</a>
+            </span>
+          
+            <span class="duration">Duration: 1:45</span>
+          
+        </div>
+      
+        <div class="entry fri duration-1">
+          
+          
+            <span class="time">10:00</span>
+          
+          
+            <span class="line">—</span>
+          
+          
+            <span class="activity">
+              
+                bavaria
+                <span class="devider"> | </span>
+              
+                com
+                <span class="devider"> | </span>
+              
+                issue 105
+                
+              
+            </span>
+          
+            <span class="edit">
+                &nbsp;|&nbsp;<a href="/?edit=56">edit</a>
+            </span>
+          
+            <span class="duration">Duration: 1:00</span>
+          
+        </div>
+      
+        <div class="entry fri start">
+          
+            <span class="date">fri – 06-17-2011</span> —
+          
+          
+            <span class="time">09:00</span>
+          
+          
+            <span class="line">—</span>
+          
+          
+            <span class="activity">
+              
+                start
+                
+              
+            </span>
+          
+            <span class="edit">
+                <a href="/?edit=57">edit</a>
+            </span>
+          
+        </div>
+      
+        <div class="entry thu duration-0">
+          
+          
+            <span class="time">17:15</span>
+          
+          
+            <span class="line">—</span>
+          
+          
+            <span class="activity">
+              
+                at
+                <span class="devider"> | </span>
+              
+                issue 624
+                
+              
+            </span>
+          
+            <span class="edit">
+                &nbsp;|&nbsp;<a href="/?edit=58">edit</a>
+            </span>
+          
+            <span class="duration">Duration: 0:30</span>
+          
+        </div>
+      
+        <div class="entry thu duration-0">
+          
+          
+            <span class="time">16:45</span>
+          
+          
+            <span class="line">—</span>
+          
+          
+            <span class="activity">
+              
+                at
+                <span class="devider"> | </span>
+              
+                issue 593
+                
+              
+            </span>
+          
+            <span class="edit">
+                &nbsp;|&nbsp;<a href="/?edit=59">edit</a>
+            </span>
+          
+            <span class="duration">Duration: 0:30</span>
+          
+        </div>
+      
+        <div class="entry thu duration-0">
+          
+          
+            <span class="time">16:15</span>
+          
+          
+            <span class="line">—</span>
+          
+          
+            <span class="activity">
+              
+                at
+                <span class="devider"> | </span>
+              
+                issue 323
+                
+              
+            </span>
+          
+            <span class="edit">
+                &nbsp;|&nbsp;<a href="/?edit=60">edit</a>
+            </span>
+          
+            <span class="duration">Duration: 0:30</span>
+          
+        </div>
+      
+        <div class="entry thu duration-2">
+          
+          
+            <span class="time">15:45</span>
+          
+          
+            <span class="line">—</span>
+          
+          
+            <span class="activity">
+              
+                at
+                <span class="devider"> | </span>
+              
+                issue 549
+                
+              
+            </span>
+          
+            <span class="edit">
+                &nbsp;|&nbsp;<a href="/?edit=61">edit</a>
+            </span>
+          
+            <span class="duration">Duration: 2:30</span>
+          
+        </div>
+      
+        <div class="entry thu duration-0">
+          
+          
+            <span class="time">13:15</span>
+          
+          
+            <span class="line">—</span>
+          
+          
+            <span class="activity">
+              
+                at
+                <span class="devider"> | </span>
+              
+                issue 613
+                
+              
+            </span>
+          
+            <span class="edit">
+                &nbsp;|&nbsp;<a href="/?edit=62">edit</a>
+            </span>
+          
+            <span class="duration">Duration: 0:30</span>
+          
+        </div>
+      
+        <div class="entry thu break">
+          
+          
+            <span class="time">12:45</span>
+          
+          
+            <span class="line">—</span>
+          
+          
+            <span class="activity">
+              
+                lunch **
+                
+              
+            </span>
+          
+            <span class="edit">
+                &nbsp;|&nbsp;<a href="/?edit=63">edit</a>
+            </span>
+          
+        </div>
+      
+        <div class="entry thu duration-2">
+          
+          
+            <span class="time">12:30</span>
+          
+          
+            <span class="line">—</span>
+          
+          
+            <span class="activity">
+              
+                at
+                <span class="devider"> | </span>
+              
+                issue 613
+                
+              
+            </span>
+          
+            <span class="edit">
+                &nbsp;|&nbsp;<a href="/?edit=64">edit</a>
+            </span>
+          
+            <span class="duration">Duration: 2:00</span>
+          
+        </div>
+      
+        <div class="entry thu duration-1">
+          
+          
+            <span class="time">10:30</span>
+          
+          
+            <span class="line">—</span>
+          
+          
+            <span class="activity">
+              
+                at
+                <span class="devider"> | </span>
+              
+                issue 566
+                
+              
+            </span>
+          
+            <span class="edit">
+                &nbsp;|&nbsp;<a href="/?edit=65">edit</a>
+            </span>
+          
+            <span class="duration">Duration: 1:30</span>
+          
+        </div>
+      
+        <div class="entry thu start">
+          
+            <span class="date">thu – 06-16-2011</span> —
+          
+          
+            <span class="time">09:00</span>
+          
+          
+            <span class="line">—</span>
+          
+          
+            <span class="activity">
+              
+                start
+                
+              
+            </span>
+          
+            <span class="edit">
+                <a href="/?edit=66">edit</a>
+            </span>
+          
+        </div>
+      
+        <div class="entry wed duration-2">
+          
+          
+            <span class="time">17:15</span>
+          
+          
+            <span class="line">—</span>
+          
+          
+            <span class="activity">
+              
+                bavaria
+                <span class="devider"> | </span>
+              
+                com
+                <span class="devider"> | </span>
+              
+                issue 105
+                
+              
+            </span>
+          
+            <span class="edit">
+                &nbsp;|&nbsp;<a href="/?edit=67">edit</a>
+            </span>
+          
+            <span class="duration">Duration: 2:00</span>
+          
+        </div>
+      
+        <div class="entry wed duration-2">
+          
+          
+            <span class="time">15:15</span>
+          
+          
+            <span class="line">—</span>
+          
+          
+            <span class="activity">
+              
+                vvv
+                <span class="devider"> | </span>
+              
+                patch
+                
+              
+            </span>
+          
+            <span class="edit">
+                &nbsp;|&nbsp;<a href="/?edit=68">edit</a>
+            </span>
+          
+            <span class="duration">Duration: 2:00</span>
+          
+        </div>
+      
+        <div class="entry wed duration-0">
+          
+          
+            <span class="time">13:15</span>
+          
+          
+            <span class="line">—</span>
+          
+          
+            <span class="activity">
+              
+                nuffic
+                <span class="devider"> | </span>
+              
+                issues
+                
+              
+            </span>
+          
+            <span class="edit">
+                &nbsp;|&nbsp;<a href="/?edit=69">edit</a>
+            </span>
+          
+            <span class="duration">Duration: 0:30</span>
+          
+        </div>
+      
+        <div class="entry wed break">
+          
+          
+            <span class="time">12:45</span>
+          
+          
+            <span class="line">—</span>
+          
+          
+            <span class="activity">
+              
+                lunch **
+                
+              
+            </span>
+          
+            <span class="edit">
+                &nbsp;|&nbsp;<a href="/?edit=70">edit</a>
+            </span>
+          
+        </div>
+      
+        <div class="entry wed duration-2">
+          
+          
+            <span class="time">12:30</span>
+          
+          
+            <span class="line">—</span>
+          
+          
+            <span class="activity">
+              
+                nuffic
+                <span class="devider"> | </span>
+              
+                issues
+                
+              
+            </span>
+          
+            <span class="edit">
+                &nbsp;|&nbsp;<a href="/?edit=71">edit</a>
+            </span>
+          
+            <span class="duration">Duration: 2:00</span>
+          
+        </div>
+      
+        <div class="entry wed duration-1">
+          
+          
+            <span class="time">10:30</span>
+          
+          
+            <span class="line">—</span>
+          
+          
+            <span class="activity">
+              
+                fenelab
+                <span class="devider"> | </span>
+              
+                style fix and release
+                
+              
+            </span>
+          
+            <span class="edit">
+                &nbsp;|&nbsp;<a href="/?edit=72">edit</a>
+            </span>
+          
+            <span class="duration">Duration: 1:30</span>
+          
+        </div>
+      
+        <div class="entry wed start">
+          
+            <span class="date">wed – 06-15-2011</span> —
+          
+          
+            <span class="time">09:00</span>
+          
+          
+            <span class="line">—</span>
+          
+          
+            <span class="activity">
+              
+                start
+                
+              
+            </span>
+          
+            <span class="edit">
+                <a href="/?edit=73">edit</a>
+            </span>
+          
+        </div>
+      
+        <div class="entry tue duration-5">
+          
+          
+            <span class="time">17:45</span>
+          
+          
+            <span class="line">—</span>
+          
+          
+            <span class="activity">
+              
+                at
+                <span class="devider"> | </span>
+              
+                issue 612
+                
+              
+            </span>
+          
+            <span class="edit">
+                &nbsp;|&nbsp;<a href="/?edit=74">edit</a>
+            </span>
+          
+            <span class="duration">Duration: 5:00</span>
+          
+        </div>
+      
+        <div class="entry tue break">
+          
+          
+            <span class="time">12:45</span>
+          
+          
+            <span class="line">—</span>
+          
+          
+            <span class="activity">
+              
+                lunch **
+                
+              
+            </span>
+          
+            <span class="edit">
+                &nbsp;|&nbsp;<a href="/?edit=75">edit</a>
+            </span>
+          
+        </div>
+      
+        <div class="entry tue duration-2">
+          
+          
+            <span class="time">12:30</span>
+          
+          
+            <span class="line">—</span>
+          
+          
+            <span class="activity">
+              
+                at
+                <span class="devider"> | </span>
+              
+                issue 612
+                
+              
+            </span>
+          
+            <span class="edit">
+                &nbsp;|&nbsp;<a href="/?edit=76">edit</a>
+            </span>
+          
+            <span class="duration">Duration: 2:30</span>
+          
+        </div>
+      
+        <div class="entry tue duration-1">
+          
+          
+            <span class="time">10:00</span>
+          
+          
+            <span class="line">—</span>
+          
+          
+            <span class="activity">
+              
+                at
+                <span class="devider"> | </span>
+              
+                overleg
+                
+              
+            </span>
+          
+            <span class="edit">
+                &nbsp;|&nbsp;<a href="/?edit=77">edit</a>
+            </span>
+          
+            <span class="duration">Duration: 1:00</span>
+          
+        </div>
+      
+        <div class="entry tue start">
+          
+            <span class="date">tue – 06-14-2011</span> —
+          
+          
+            <span class="time">09:00</span>
+          
+          
+            <span class="line">—</span>
+          
+          
+            <span class="activity">
+              
+                start
+                
+              
+            </span>
+          
+            <span class="edit">
+                <a href="/?edit=78">edit</a>
+            </span>
+          
+        </div>
+      
+        <div class="entry mon duration-8">
+          
+          
+            <span class="time">17:00</span>
+          
+          
+            <span class="line">—</span>
+          
+          
+            <span class="activity">
+              
+                pareto
+                <span class="devider"> | </span>
+              
+                feestdag
+                
+              
+            </span>
+          
+            <span class="edit">
+                &nbsp;|&nbsp;<a href="/?edit=79">edit</a>
+            </span>
+          
+            <span class="duration">Duration: 8:00</span>
+          
+        </div>
+      
+        <div class="entry mon start">
+          
+            <span class="date">mon – 06-13-2011</span> —
+          
+          
+            <span class="time">09:00</span>
+          
+          
+            <span class="line">—</span>
+          
+          
+            <span class="activity">
+              
+                start
+                
+              
+            </span>
+          
+            <span class="edit">
+                <a href="/?edit=80">edit</a>
+            </span>
+          
+        </div>
+      
+        <div class="entry fri duration-2">
+          
+          
+            <span class="time">21:00</span>
+          
+          
+            <span class="line">—</span>
+          
+          
+            <span class="activity">
+              
+                bavaria
+                <span class="devider"> | </span>
+              
+                com
+                <span class="devider"> | </span>
+              
+                beer selector
+                
+              
+            </span>
+          
+            <span class="edit">
+                &nbsp;|&nbsp;<a href="/?edit=81">edit</a>
+            </span>
+          
+            <span class="duration">Duration: 2:00</span>
+          
+        </div>
+      
+        <div class="entry fri break">
+          
+          
+            <span class="time">19:00</span>
+          
+          
+            <span class="line">—</span>
+          
+          
+            <span class="activity">
+              
+                diner **
+                
+              
+            </span>
+          
+            <span class="edit">
+                &nbsp;|&nbsp;<a href="/?edit=82">edit</a>
+            </span>
+          
+        </div>
+      
+        <div class="entry fri duration-8">
+          
+          
+            <span class="time">17:00</span>
+          
+          
+            <span class="line">—</span>
+          
+          
+            <span class="activity">
+              
+                bavaria
+                <span class="devider"> | </span>
+              
+                com
+                <span class="devider"> | </span>
+              
+                beer selector
+                
+              
+            </span>
+          
+            <span class="edit">
+                &nbsp;|&nbsp;<a href="/?edit=83">edit</a>
+            </span>
+          
+            <span class="duration">Duration: 8:00</span>
+          
+        </div>
+      
+        <div class="entry fri start">
+          
+            <span class="date">fri – 06-10-2011</span> —
+          
+          
+            <span class="time">09:00</span>
+          
+          
+            <span class="line">—</span>
+          
+          
+            <span class="activity">
+              
+                start
+                
+              
+            </span>
+          
+            <span class="edit">
+                <a href="/?edit=84">edit</a>
+            </span>
+          
+        </div>
+      
+        <div class="entry thu duration-2">
+          
+          
+            <span class="time">21:00</span>
+          
+          
+            <span class="line">—</span>
+          
+          
+            <span class="activity">
+              
+                bavaria
+                <span class="devider"> | </span>
+              
+                com
+                <span class="devider"> | </span>
+              
+                pub facts
+                
+              
+            </span>
+          
+            <span class="edit">
+                &nbsp;|&nbsp;<a href="/?edit=85">edit</a>
+            </span>
+          
+            <span class="duration">Duration: 2:00</span>
+          
+        </div>
+      
+        <div class="entry thu break">
+          
+          
+            <span class="time">19:00</span>
+          
+          
+            <span class="line">—</span>
+          
+          
+            <span class="activity">
+              
+                diner **
+                
+              
+            </span>
+          
+            <span class="edit">
+                &nbsp;|&nbsp;<a href="/?edit=86">edit</a>
+            </span>
+          
+        </div>
+      
+        <div class="entry thu duration-4">
+          
+          
+            <span class="time">17:00</span>
+          
+          
+            <span class="line">—</span>
+          
+          
+            <span class="activity">
+              
+                bavaria
+                <span class="devider"> | </span>
+              
+                com
+                <span class="devider"> | </span>
+              
+                quality
+                
+              
+            </span>
+          
+            <span class="edit">
+                &nbsp;|&nbsp;<a href="/?edit=87">edit</a>
+            </span>
+          
+            <span class="duration">Duration: 4:00</span>
+          
+        </div>
+      
+        <div class="entry thu duration-4">
+          
+          
+            <span class="time">13:00</span>
+          
+          
+            <span class="line">—</span>
+          
+          
+            <span class="activity">
+              
+                bavaria
+                <span class="devider"> | </span>
+              
+                com
+                <span class="devider"> | </span>
+              
+                tricoid link and rotation
+                
+              
+            </span>
+          
+            <span class="edit">
+                &nbsp;|&nbsp;<a href="/?edit=88">edit</a>
+            </span>
+          
+            <span class="duration">Duration: 4:00</span>
+          
+        </div>
+      
+        <div class="entry thu start">
+          
+            <span class="date">thu – 06-09-2011</span> —
+          
+          
+            <span class="time">09:00</span>
+          
+          
+            <span class="line">—</span>
+          
+          
+            <span class="activity">
+              
+                start
+                
+              
+            </span>
+          
+            <span class="edit">
+                <a href="/?edit=89">edit</a>
+            </span>
+          
+        </div>
+      
+        <div class="entry wed duration-1">
+          
+          
+            <span class="time">17:00</span>
+          
+          
+            <span class="line">—</span>
+          
+          
+            <span class="activity">
+              
+                bavaria
+                <span class="devider"> | </span>
+              
+                com
+                <span class="devider"> | </span>
+              
+                tricoid link and rotation
+                
+              
+            </span>
+          
+            <span class="edit">
+                &nbsp;|&nbsp;<a href="/?edit=90">edit</a>
+            </span>
+          
+            <span class="duration">Duration: 1:00</span>
+          
+        </div>
+      
+        <div class="entry wed duration-1">
+          
+          
+            <span class="time">16:00</span>
+          
+          
+            <span class="line">—</span>
+          
+          
+            <span class="activity">
+              
+                bavaria
+                <span class="devider"> | </span>
+              
+                com
+                <span class="devider"> | </span>
+              
+                background blue
+                
+              
+            </span>
+          
+            <span class="edit">
+                &nbsp;|&nbsp;<a href="/?edit=91">edit</a>
+            </span>
+          
+            <span class="duration">Duration: 1:00</span>
+          
+        </div>
+      
+        <div class="entry wed duration-2">
+          
+          
+            <span class="time">15:00</span>
+          
+          
+            <span class="line">—</span>
+          
+          
+            <span class="activity">
+              
+                bavaria
+                <span class="devider"> | </span>
+              
+                com
+                <span class="devider"> | </span>
+              
+                translation
+                
+              
+            </span>
+          
+            <span class="edit">
+                &nbsp;|&nbsp;<a href="/?edit=92">edit</a>
+            </span>
+          
+            <span class="duration">Duration: 2:00</span>
+          
+        </div>
+      
+        <div class="entry wed duration-4">
+          
+          
+            <span class="time">13:00</span>
+          
+          
+            <span class="line">—</span>
+          
+          
+            <span class="activity">
+              
+                nuffic
+                <span class="devider"> | </span>
+              
+                issues
+                
+              
+            </span>
+          
+            <span class="edit">
+                &nbsp;|&nbsp;<a href="/?edit=93">edit</a>
+            </span>
+          
+            <span class="duration">Duration: 4:00</span>
+          
+        </div>
+      
+        <div class="entry wed start">
+          
+            <span class="date">wed – 06-08-2011</span> —
+          
+          
+            <span class="time">09:00</span>
+          
+          
+            <span class="line">—</span>
+          
+          
+            <span class="activity">
+              
+                start
+                
+              
+            </span>
+          
+            <span class="edit">
+                <a href="/?edit=94">edit</a>
+            </span>
+          
+        </div>
+      
+        <div class="entry tue duration-7">
+          
+          
+            <span class="time">17:00</span>
+          
+          
+            <span class="line">—</span>
+          
+          
+            <span class="activity">
+              
+                fenelab
+                <span class="devider"> | </span>
+              
+                additional styling
+                
+              
+            </span>
+          
+            <span class="edit">
+                &nbsp;|&nbsp;<a href="/?edit=95">edit</a>
+            </span>
+          
+            <span class="duration">Duration: 7:00</span>
+          
+        </div>
+      
+        <div class="entry tue duration-1">
+          
+          
+            <span class="time">10:00</span>
+          
+          
+            <span class="line">—</span>
+          
+          
+            <span class="activity">
+              
+                floravontuur
+                <span class="devider"> | </span>
+              
+                issues
+                
+              
+            </span>
+          
+            <span class="edit">
+                &nbsp;|&nbsp;<a href="/?edit=96">edit</a>
+            </span>
+          
+            <span class="duration">Duration: 1:00</span>
+          
+        </div>
+      
+        <div class="entry tue start">
+          
+            <span class="date">tue – 06-07-2011</span> —
+          
+          
+            <span class="time">09:00</span>
+          
+          
+            <span class="line">—</span>
+          
+          
+            <span class="activity">
+              
+                start
+                
+              
+            </span>
+          
+            <span class="edit">
+                <a href="/?edit=97">edit</a>
+            </span>
+          
+        </div>
+      
+        <div class="entry mon duration-8">
+          
+          
+            <span class="time">17:00</span>
+          
+          
+            <span class="line">—</span>
+          
+          
+            <span class="activity">
+              
+                floravontuur
+                <span class="devider"> | </span>
+              
+                issues
+                
+              
+            </span>
+          
+            <span class="edit">
+                &nbsp;|&nbsp;<a href="/?edit=98">edit</a>
+            </span>
+          
+            <span class="duration">Duration: 8:00</span>
+          
+        </div>
+      
+        <div class="entry mon start">
+          
+            <span class="date">mon – 06-06-2011</span> —
+          
+          
+            <span class="time">09:00</span>
+          
+          
+            <span class="line">—</span>
+          
+          
+            <span class="activity">
+              
+                start
+                
+              
+            </span>
+          
+            <span class="edit">
+                <a href="/?edit=99">edit</a>
+            </span>
+          
+        </div>
+      
+    </section>
+{% endblock %}

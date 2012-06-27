@@ -1,12 +1,17 @@
 {% extends "base.html" %}
 
-{% block title %}TimeTracker{% endblock %}
+{% block title %}Timelog{% endblock %}
 
 {% block description %}{% endblock %}
 
 {% block logout %}<li><a href="{{ url }}">{{ url_linktext }}</a></li>{% endblock %}
 
 {% block nav %}
+    <nav>
+        <ul>
+            <li><a class="timelog" href="/" title="Home"><h1>Timelog</h1></a></li>
+        </ul>
+    </nav>
     <p class="description">
         Timelog lets you keep track of your activities. Every first 
         login of the day creates a start entry. After that
@@ -17,22 +22,21 @@
 {% endblock %}
 
 {% block content %}
-    
-
-<!--  
-    {% for greeting in greetings %}
-      {% if greeting.author %}
-        <b>{{ greeting.author.nickname() }}</b> wrote:
-      {% else %}
-        An anonymous person wrote:
-      {% endif %}
-      <blockquote>{{ greeting.content|escape }}</blockquote>
-    {% endfor %}
-   <form action="/" method="post">
-      <div><textarea name="content" rows="3" cols="60"></textarea></div>
-      <div><input type="submit" value="Sign Guestbook"></div>
-    </form> 
--->
-
-    <a href="{{ url }}">{{ url_linktext }}</a>
+<p>
+    This app is still under construction. Right now it is setup to give an idea 
+    of what the finished app will be able to do. So far not everything works,
+    but some stuff does. For instance:
+</p>
+<ul>
+    <li>
+        <strong>Logging in:</strong> with a google account you can log into the 
+        application and see what a page with content would look like. If you 
+        don't have a google account then here are some static pages:<br /> 
+        <a href="/timelog-static">Timelog</a> | <a href="/report-static">Report</a> | 
+        <a href="/help-static">Help</a> | <a href="/settings-static">Settings</a>    
+    </li>
+</ul>
+<p>
+    <a href="{{ url }}" class="button big">{{ url_linktext }}</a>
+</p>    
 {% endblock %}

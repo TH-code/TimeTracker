@@ -5,18 +5,49 @@ body
 
 header
   height: 85px
-  margin: 15px auto 50px
-  width: 960px
+  margin: 20px auto 12px
+  max-width: 60em
 
-h1
+nav a, h1
+  line-height: 16px
+  height: 13px
+
+label
   @extend .left
+  clear: both
+  width: 9em
+  text-align: right
+  padding-right: 1em
+  padding-bottom: 1em
+  display: block
+
+.controls
+  input
+    @extend .right
+  // margin-left: 10em
+  // input
+    // @extend .right
+   
+.button
+  display: block
+  @extend .left
+  padding: .35em .5em .25em
+  +border-radius(.25em)
+
+.big
+  padding: 1em 2em
+  margin: 2em 0
+  +border-radius(.5em)
+
+.timelog 
+  h1
+    margin-top: -19px 
 
 nav
-  clear: right
-  overflow: hidden
+  @extend .left
   text-transform: uppercase
   margin:
-    top: 5.25em
+    top: 2.75em
   a
     text-decoration: none
   li
@@ -26,33 +57,59 @@ nav
     padding: 0 1em
     line-height: 1
     &:first-child
-      border-left: 0
+      border: 0
+      padding-left: 0
 
 .description, nav
-  @extend .right
 
 #head-wrap
   overflow: hidden
+  
+form
+  overflow: hidden
+  padding: 1em
+  margin: 2em 0   
 
 #content
-  margin: 0 auto
-  width: 960px
-  position: relative
-  width: 960px
+  font-size: 130%
   margin: 20px auto 50px
+  position: relative
+  max-width: 46.2em
+  padding: 
+    left: 6.9em 
+    right: 6.9em
 
+// .timelog
+  // #content  
+    // max-width: 60em
+//   
 .description
+  @extend .right
   width: 70%
   text-align: right
 
+.new
+  // padding: 1em 7.8em 1em 6.9em
+  input, select
+    max-width: 25em
+    
+  form
+    margin: 0
+  // .entry
+    // border: 
+      // bottom: 2px solid #fff
+    // margin:
+      // bottom: -2.154em
+
 .log
-  overflow: auto
-  height: 800px
-  padding: 1em .25em 1em 4em
+  // overflow: auto
+  // height: 800px
+  // padding: 1em 6.9em
   
 .entry
   padding: .25em .5em
   position: relative
+  max-width: 50em
 
 .time, .line
   left: -4em
@@ -72,9 +129,16 @@ nav
 .right
   float: right
 
-.duration
-  float: right
+.duration, .edit
+  @extend .right
 
 @for $_i from 1 through 24
   .duration-#{$_i}
     min-height: $_i * 1em
+
+th, td
+  padding: .25em .5em
+
+tbody
+  th
+    text-align: left

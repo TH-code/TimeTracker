@@ -1,25 +1,78 @@
 {% extends "base.html" %}
 
-{% block title %}TimeTracker{% endblock %}
+{% block title %}Timelog{% endblock %}
 {% block bodyattr %} class="timelog"{% endblock %}
-{% block description %}{% endblock %}
 
-{% block logout %}<li><a href="{{ url }}">{{ url_linktext }}</a></li>{% endblock %}
+{% block nav %}
+    <nav>
+        <ul>
+            <li><a class="timelog" href="/" title="Home"><h1>Timelog</h1></a></li>
+            <li><a class="report" href="/report">Report</a></li>
+            <li><a class="help" href="/help">Help</a></li>
+            <li><a class="settings" href="/settings">Settings</a></li>
+            <li><a href="{{ url }}">{{ url_linktext }}</a></li>
+        </ul>
+    </nav>
+{% endblock %}
 
 {% block content %}
-
-    <form action="/" method="post">
-        <fieldset>
-            <textarea name="content" rows="3" cols="60"></textarea>
-        </fieldset>
-        <div class="controls"><input type="submit" value="Track"></div>
-    </form>
+    <p>
+        <span class="todo">
+            First use pointers still need to be implemented.
+        </span>
+    </p>    
+    <div class="new">
+        <div class="entry{% if weekday %} {{weekday}}{% endif %}">
+          {% if time %}
+            <span class="time">{{time}}</span>
+            <span class="line">&mdash;</span>
+          {% endif %}
+          {% if duration %}
+            <span class="duration">Duration: {{time}}</span>
+          {% endif %}
+            <form action="/" method="post">
+                <fieldset>
+                    <legend>Create new Activity</legend>
+                    <br/>
+                    <p>
+                        <label for="new">New activity</label>
+                        <input name="new" size="55"/>
+                    </p>
+                    {% if activity %}
+                    <p>
+                        <label for="existing">Existing activity</label>
+                        <select name="existing">
+                          {% for a in activity %}
+                            <option>{{a}}</option>
+                          {% endfor %}
+                        </select>
+                    </p>
+                    {% endif %}
+                    <p class="form-help">
+                        Either select an old activity or enter a new one. The
+                        new activity field always trumps the existing, so only 
+                        if the new activity field is empty will the selection 
+                        in the existing activity dropdown be used.
+                        <span class="todo">
+                            Does not feel completly right yet, 
+                            need to look for a better solution.
+                        </span>
+                    </p>
+                    <p>
+                        <label for="break">Break</label>
+                        <input name="break" type="checkbox"/> <span class="form-help">breaktime is not counted</span>
+                    </p>
+                </fieldset>
+                <div class="controls"><input class="button" type="submit" value="Track"></div>
+            </form>
+        </div>
+    </div>
 
     <section class="log">
       {% for entry in data %}
-        <div class="entry{% if entry.weekday %} {{entry.weekday}}{% endif %}{% if entry.pause %} pause{% endif %}{% if entry.start %} start{% endif %}{% if entry.hours %} duration-{{entry.hours}}{% endif %}">
+        <div class="entry{% if entry.weekday %} {{entry.weekday}}{% endif %}{% if entry.break %} break{% endif %}{% if entry.start %} start{% endif %}{% if entry.hours %} duration-{{entry.hours}}{% endif %}">
           {% if entry.date and entry.start %}
-            <span class="date">{{entry.date}}</span> &mdash;
+            <span class="date">{{entry.weekday}} &ndash; {{entry.date}}</span> &mdash;
           {% endif %}
           {% if entry.time %}
             <span class="time">{{entry.time}}</span>
@@ -31,13 +84,15 @@
             <span class="activity{% if entry.hidden %} hidden{% endif %}">
               {% for activity in entry.activities %}
                 {{activity}}
-                {% if not loop.last %} <span class="devider">::</span>{% endif %}
+                {% if not loop.last %}<span class="devider">{{separator}}</span>{% endif %}
               {% endfor %}
             </span>
           {% endif %}
-          
+            <span class="edit">
+                {% if not entry.start %}&nbsp;|&nbsp;{% endif %}<a href="/?edit={{entry.i}}">edit</a>
+            </span>
           {% if entry.duration %}
-            <span class="duration">{{entry.duration}}</span>
+            <span class="duration">Duration: {{entry.duration}}</span>
           {% endif %}
         </div>
       {% endfor %}

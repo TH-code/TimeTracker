@@ -22,7 +22,8 @@ h1, h2
 
 h1
   @extend .ms-5
-  margin: .1em -1.75em
+  text-transform: none
+  margin: -.05em 0 .1em
 
 h2
   @extend .ms-4
@@ -36,9 +37,31 @@ h3, .description
     family: georgia
     style: italic
 
-.pause
+.break
   font:
     style: italic
 
+.new
+  legend
+    @extend .ms-2
+
+.form-help
+  @extend .ms-0
+
+p.form-help
+  margin-left: $ms-2 * 10 
+
 .date, .time, .line
   text-align: right
+
+th
+  text-align: left
+td
+  text-align: right
+
+.button
+  text-align: center
+  text-decoration: none
+.big
+  @extend .ms-2
+  
