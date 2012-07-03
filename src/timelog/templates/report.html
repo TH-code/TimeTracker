@@ -15,7 +15,6 @@
     </nav>
 {% endblock %}
 
-
 {% block logout %}<li><a href="{{ url }}">{{ url_linktext }}</a></li>{% endblock %}
 
 {% block content %}
@@ -23,6 +22,19 @@
         <fieldset>
             <legend>Create report</legend>
             <br/>
+            {% if step == 3 %}
+                <p class="first_use">
+                    This is where you would read out reports of your log.
+                    Currently this is not yet functional.
+                    <br /><br />
+                    This is the last step in the walkthrough. If you have 
+                    questions that are not answered in the 
+                    <a href="/help">help section</a>, you can submit an issue, 
+                    send an email. 
+                    <br /><br />
+                    <strong>Happy logging!</strong> 
+                </p>
+            {% endif %}
             <p>
                 <label for="show">Show</label>
                 <select name="show">

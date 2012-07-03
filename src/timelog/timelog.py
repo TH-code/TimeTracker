@@ -10,10 +10,21 @@ from time import strptime
 
 from models import UserData
 
-hours_minutes = lambda td: str(td).split(':')[:2]
-duration = lambda td: ':'.join(hours_minutes(td))
+hours_minutes = lambda td: (td.seconds // 60 // 60, td.seconds // 60 % 60) 
+duration = lambda td: '%d:%02d' % hours_minutes(td)
 home_url = lambda uri: '/'.join(uri.split('/')[:3])
 
+defaults = {
+    'separator': '|',
+    'date_repr': '%m-%d-%Y',
+    'time_repr': '%H:%M',
+    'new_day_time': (0, 0),
+    'time_span': 2,
+    'time_zone': 0,
+    'first_time': True,
+    'entries': [],
+    'log': [],
+}
 
 class Base(webapp2.RequestHandler):
 
@@ -24,73 +35,197 @@ class Base(webapp2.RequestHandler):
             url = users.create_logout_url(home_url(self.request.uri))
             url_linktext = 'Logout'
             template = None
-        else:
-            url = users.create_login_url()
-            url_linktext = 'Login'
-            template = jinja_environment.get_template('index.html')
+            
+            uid = user.user_id()
+            data = self.get_data(uid)
+            now = datetime.now() + timedelta(seconds=3600 * data.time_zone)
 
-        return template, {'url': url, 'url_linktext': url_linktext}, user
-    
+            values = {'url': url, 
+                      'url_linktext': url_linktext,
+                      'uid': uid,
+                      'data': data,
+                      'now': now}
+            
+            login = int(self.request.get('login', u'0'))
+            if login:
+                values['login'] = login
+            
+            step = int(self.request.get('step', u'0'))
+            if step:
+                values['step'] = step
+        else:
+            url = users.create_login_url() + '?login=1'
+            url_linktext = 'Login'
+            values = {'url': url, 
+                      'url_linktext': url_linktext }
+            template = jinja_environment.get_template('index.html')
+            
+        return template, values, user
+
     def get_data(self, uid):
         data = UserData.get_by_id(uid)
-        if not data:
+        if data:
+            changed = 0
+            
+            if not data.separator:
+                data.separator = defaults['separator']
+                changed += 1
+            if not data.date_repr:
+                data.date_repr = defaults['date_repr']
+                changed += 1
+            if not data.time_repr:
+                data.time_repr = defaults['time_repr']
+                changed += 1
+            if not data.new_day_time:
+                data.new_day_time = defaults['new_day_time']
+                changed += 1
+            if not data.time_span:
+                data.time_span = defaults['time_span'] 
+                changed += 1
+            if not data.time_zone:
+                data.time_zone = defaults['time_zone'] 
+                changed += 1
+            if not data.log:
+                data.log = defaults['log'] 
+                changed += 1
+            
+            if changed:
+                data.put()
+        else:
             data = UserData(
                 id=uid,
-                separator=' | ',
-                date_repr = '%m-%d-%Y',
-                time_repr = '%H:%M',
-                start_time = (6, 0),
-                data = [{'activity': ['start'],
-                         'datetime': datetime.now(),
-                         'break': False,
-                         'start': True}]) 
+                separator = defaults['separator'],
+                date_repr = defaults['date_repr'],
+                first_time = defaults['first_time'],
+                time_repr = defaults['time_repr'],
+                new_day_time = defaults['new_day_time'],
+                time_span = defaults['time_span'],
+                time_zone = defaults['time_zone'],
+                log = defaults['log']) 
             data.put()
         return data
 
-    def massage(self, data):
+    def massage(self, log):
         activities = []
-        for i, entry in enumerate(data):
-            entry['i'] = i
-            if entry['activities'] not in activities: 
-                activities.append(entry['activities'])
-            entry['weekday'] = entry['datetime'].strftime('%a').lower()
-            if not entry['start'] and not entry['break']:
-                try:
-                    td = entry['datetime'] - data[i+1]['datetime']
-                    entry['hours'], entry['minutes'] = hours_minutes(td) 
-                    entry['duration'] = duration(td)
-                except IndexError:
-                    pass
+        entries = []
+        for i, d in enumerate(log):
+            meta = {'i': i}
+            if not d['start']:
+                if d['activity'] not in activities: 
+                    activities.append(d['activity'])
+                if not d['break']:
+                    try:
+                        td = d['datetime'] - log[i+1]['datetime']
+                        meta['hours'], meta['minutes'] = hours_minutes(td) 
+                        meta['duration'] = duration(td)
+                    except IndexError:
+                        pass
+            entries.append({'meta': meta, 
+                            'data': d})
         activities.sort()
     
-        return data, activities
+        return entries, activities
 
 
 class Timelog(Base):
-
-    def get(self):
-        massage_demodata(demodata)
+    
+    def get_base_timelog_values(self):
         
         template, values, user = self.get_base_values()
-        if user:
-            uid = user.user_id()
-            now = datetime.now()
-            data = self.get_data(uid)
-            _data, activity = self.massage(demodata)
-            template = jinja_environment.get_template('timelog.html')
-            values.update({
-                'data': _data,
-                'time': now.strftime(data.time_repr),
-                'weekday': now.strftime('%a').lower(),
-                'duration': duration(now - _data[0]['datetime']),
-                'activity': [data.separator.join(a) for a in activity],
-                'separator': data.separator,
-            })
+        if template:
+            return template, values, user
         
+        template = jinja_environment.get_template('timelog.html')
+        
+        login = values.get('login', 0) 
+        step = values.get('step', 0) 
+        now = values.get('now', None) 
+        data = values.get('data', None) 
+
+        entries, activities = self.massage(data.log)
+        try:
+            most_recent = entries[0]['data']
+        except IndexError:
+            most_recent = None
+        
+        if not most_recent and login and not step:
+            self.redirect('/settings?step=1')
+            return template, values, user
+        if step == 2 or login:
+            start_entry = {'activity': ['start'],                
+                           'datetime': now,
+                           'start': True,
+                           'break': False }
+        if step == 2 and not most_recent:
+            data.log.insert(0, start_entry)
+            data.put()
+        if most_recent and login:
+            last_date = most_recent['datetime'].strftime(data.date_repr)
+            now_date = now.strftime(data.date_repr)
+            if last_date != now_date:
+                data.log.insert(0, start_entry)
+                data.put()
+
+        days = []
+        for i in range((31 * data.time_span) + 1, -1, -1):
+            _min = now + timedelta(days=(-31 * data.time_span))
+            _cur = _min + timedelta(i)
+            wrong_month = int(_min.strftime('%m'))
+            if int(_cur.strftime('%m')) != wrong_month:
+                days.append(_cur)
+        
+        most_recent = data.log[0] if data.log else False
+        values.update({
+            'data': data,
+            'entries': entries,
+            'days': days,
+            'now': now,
+            'time': now.strftime(data.time_repr),
+            'time_repr': data.time_repr,
+            'date': now.strftime(data.date_repr),
+            'date_repr': data.date_repr,
+            'weekday': now.strftime('%a').lower(),
+            'duration': duration(now - most_recent['datetime']) if most_recent else (0,0),
+            'activities': activities,
+            'separator': data.separator,
+        })
+        self.redirect('/')
+    
+        return template, values, user
+
+    def get(self):
+
+        massage_demodata(demodata)
+        template, values, user = self.get_base_timelog_values()
+
         self.response.out.write(template.render(values))
 
     def post(self):
-        pass
+
+        massage_demodata(demodata)
+        template, values, user = self.get_base_timelog_values()
+        
+        data, changed, errors = values['data'], [], {}
+        
+#        dd = self.request.get('date')
+#        hh = self.request.get('hour')
+#        mm = self.request.get('min')
+#        if dd and hh and mm:
+#            import pdb; pdb.set_trace()
+
+        activity = [i.strip() for i in self.request.get('new').split(data.separator)]
+        activity = activity or [i.strip() for i in self.request.get('existing').split(data.separator)]
+        data.log.insert(0, {'activity': activity,                
+                            'datetime': values['now'],
+                            'start': activity == ['start'],
+                            'break': True if self.request.get('break') else False })
+        data.put()
+        
+        step = values.get('step', 0) 
+        if step == 3:
+            self.redirect('/report?step=3')
+        self.redirect('/')
+        self.response.out.write(template.render(values))
 
 
 class Report(Base):
@@ -103,16 +238,16 @@ class Report(Base):
             uid = user.user_id()
             now = datetime.now()
             data = self.get_data(uid)
-            _data, activity = self.massage(demodata)
-            __data, report = self.strip(_data)
+            entries, activity = self.massage(demodata)
+            _entries, report = self.strip(entries)
             template = jinja_environment.get_template('report.html')
             headers = [
                 "activity", "mon","tue","wed","thu","fri","sat","sun","total"]
             values.update({
-                'data': __data,
+                'data': _entries,
                 'time': now.strftime(data.time_repr),
                 'weekday': now.strftime('%a').lower(),
-                'duration': duration(now - _data[0]['datetime']),
+                'duration': duration(now - entries[0]['data']['datetime']),
                 'activity': [data.separator.join(a) for a in activity],
                 'report': report,
                 'headers': [{'class': h, 
@@ -136,7 +271,6 @@ class Report(Base):
         
         t = timedelta(seconds=seconds)
         time = t.__str__()[:-3]
-#        import pdb; pdb.set_trace()
         if days:
             hours, minutes = time.split(':')
             hours = str(int(hours) + days * 24)
@@ -144,20 +278,20 @@ class Report(Base):
         return time
 
     def strip(self, data):
-        start = data[34]['datetime']
-        end = data[5]['datetime']
+        start = data[34]['data']['datetime']
+        end = data[5]['data']['datetime']
         report = {
             'total': {
                 'mon': '0:00', 'tue': '0:00', 'wed': '0:00', 'thu': '0:00',
                 'fri': '0:00', 'sat': '0:00', 'sun': '0:00', 'total': '0:00'}}
-        _data = []
+        entries = []
         for i, entry in enumerate(data):
-            if (start < entry['datetime'] < end 
-                and not entry['start'] and not entry['break']):
+            if (start < entry['data']['datetime'] < end 
+                and not entry['data']['start'] and not entry['data']['break']):
 
-                activity = entry['activity']
-                weekday = entry['weekday']
-                duration = entry['duration']
+                activity = ' | '.join(entry['data']['activity'])
+                weekday = entry['data']['datetime'].strftime('%a').lower()
+                duration = entry['meta']['duration']
 
                 if activity not in report: 
                     report[activity] = {
@@ -177,9 +311,9 @@ class Report(Base):
                 report['total']['total'] = self.add_time(
                     report['total']['total'], duration)
 
-                _data.append(entry)
+                entries.append(entry)
                     
-        return _data, report
+        return entries, report
 
 
 class Help(Base):
@@ -189,26 +323,113 @@ class Help(Base):
         
         template, values, user = self.get_base_values()
         if user:
-#            uid = user.user_id()
-#            data = self.get_data(uid)
             template = jinja_environment.get_template('help.html')
         
         self.response.out.write(template.render(values))
 
 
 class Settings(Base):
+    
+    def get_base_settings_values(self):
+        
+        template, values, user = self.get_base_values()
+        if template:
+            return template, values, user
+        
+        template = jinja_environment.get_template('settings.html')
+        data = values.get('data', None) 
+        now = datetime.now()
+        
+        values.update({
+            'separator': data.separator,
+            'date_repr': data.date_repr,
+            'date_vars': ['%Y-%m-%d', '%m-%d-%Y', '%d-%m-%Y'],
+            'time_repr': data.time_repr,
+            'time_vars': ['%H:%M', '%I%M %p'],
+            'time_zone': data.time_zone,
+            'times': [{'td': i, 'representation': (
+                now + timedelta(seconds=3600 * i)
+                ).strftime(data.date_repr + ' ' + data.time_repr)} 
+                for i in range(-12, +14)
+            ],
+            'new_day_time': '%d:%02d' % tuple(data.new_day_time),
+            'time_span': data.time_span,
+        })
+
+        return template, values, user
 
     def get(self):
-        massage_demodata(demodata)
-
-        template, values, user = self.get_base_values()
-        if user:
-            uid = user.user_id()
-            data = self.get_data(uid)
-            template = jinja_environment.get_template('settings.html')
-
+        template, values, user = self.get_base_settings_values()
         self.response.out.write(template.render(values))
 
+    def post(self):
+        template, values, user = self.get_base_settings_values()
+        data, changed, errors = values['data'], [], {}
+        
+        rs = self.request.get('separator')
+        ds = data.separator
+        if rs and rs != ds:
+            data.separator = rs
+            changed.append('Separator')
+
+        rdr = self.request.get('date_repr')
+        ddr = data.date_repr
+        if rdr and rdr != ddr:
+            data.date_repr = rdr
+            changed.append('Date representation')
+
+        rtr = self.request.get('time_repr')
+        dtr = data.time_repr
+        if rtr and rtr != dtr:
+            data.time_repr = rtr
+            changed.append('Time representation')
+
+        try:
+            time = strptime(self.request.get('new_day_time'), data.time_repr)
+            rndt = [time.tm_hour, time.tm_min]
+            dndt = data.new_day_time
+            if rndt and rndt != dndt:
+                data.new_day_time = rndt 
+                changed.append('New day time')
+        except ValueError:
+            errors['new_day_time'] = (
+                'This time needs to be in the format of the set Time '
+                'representation.')
+
+        try:
+            rts = int(self.request.get('time_span'))
+            dts = data.time_span
+            if rts and rts != dts:
+                data.time_span = rts
+                changed.append('Time span')
+        except ValueError:
+            errors['time_span'] = 'This needs to be an integer.'
+    
+        rtz = int(self.request.get('time_zone'))
+        dtz = data.time_zone
+        if rtz and rtz != dtz:
+            data.time_zone = rtz
+            changed.append('Current time')
+    
+        if changed:
+            data.put()
+        
+        values.update({
+            'changed': changed,
+            'errors' : errors,
+            'now': datetime.now(),
+            'separator': data.separator,
+            'date_repr': data.date_repr,
+            'time_repr': data.time_repr,
+            'new_day_time': '%d:%02d' % tuple(data.new_day_time),
+            'time_span': data.time_span,
+            'time_zone': data.time_zone,
+        })
+        
+        step = values.get('step', 0) 
+        if step:
+            self.redirect('/?step=2')
+        self.response.out.write(template.render(values))
 
 class TimelogStatic(webapp2.RequestHandler):
 
@@ -256,712 +477,410 @@ def massage_demodata(demodata):
     for d in demodata:
         try:
             d['datetime'] = datetime(*strptime(d['datetime'], 
-                                               '%m-%d-%Y %H:%M')[0:6])
+                                     '%m-%d-%Y %H:%M')[0:6])
         except TypeError:
             pass
-        if d['activity'] == 'start' and d['start'] == False:
-            d['start'] = True
 
 demodata = [
- {'activities': ['bavaria', 'com', 'meeting'],
-  'activity': 'bavaria :: com :: meeting',
-  'date': '07-05-2011',
-  'datetime': '07-05-2011 16:00',
+ {'activity': ['brandbeer', 'com', 'meeting'],
   'break': False,
-  'start': False,
-  'time': '16:00'},
- {'activities': ['start'],
-  'activity': 'start',
-  'date': '07-05-2011',
-  'datetime': '07-05-2011 08:00',
+  'datetime': '06-26-2012 16:00',
+  'start': False},
+ {'activity': ['start'],
   'break': False,
-  'start': False,
-  'time': '08:00'},
- {'activities': ['knmp', 'sfk', 'design integration'],
-  'activity': 'knmp :: sfk :: design integration',
-  'date': '07-04-2011',
-  'datetime': '07-04-2011 17:00',
+  'datetime': '06-26-2012 08:00',
+  'start': True},
+ {'activity': ['knapmap', 'fork', 'design integration'],
   'break': False,
-  'start': False,
-  'time': '17:00'},
- {'activities': ['start'],
-  'activity': 'start',
-  'date': '07-04-2011',
-  'datetime': '07-04-2011 09:00',
+  'datetime': '06-25-2012 17:00',
+  'start': False},
+ {'activity': ['start'],
   'break': False,
-  'start': False,
-  'time': '09:00'},
- {'activities': ['knmp', 'sfk', 'design integration'],
-  'activity': 'knmp :: sfk :: design integration',
-  'date': '07-01-2011',
-  'datetime': '07-01-2011 17:00',
+  'datetime': '06-25-2012 09:00',
+  'start': True},
+ {'activity': ['knapmap', 'fork', 'design integration'],
   'break': False,
-  'start': False,
-  'time': '17:00'},
- {'activities': ['start'],
-  'activity': 'start',
-  'date': '07-01-2011',
-  'datetime': '07-01-2011 09:00',
+  'datetime': '06-22-2012 17:00',
+  'start': False},
+ {'activity': ['start'],
   'break': False,
-  'start': False,
-  'time': '09:00'},
- {'activities': ['bavaria', 'com', 'release/check'],
-  'activity': 'bavaria :: com :: release/check',
-  'date': '06-30-2011',
-  'datetime': '06-30-2011 22:00',
+  'datetime': '06-22-2012 09:00',
+  'start': True},
+ {'activity': ['brandbeer', 'com', 'release/check'],
   'break': False,
-  'start': False,
-  'time': '22:00'},
- {'activities': ['diner **'],
-  'activity': 'diner **',
-  'date': '06-30-2011',
-  'datetime': '06-30-2011 19:00',
+  'datetime': '06-21-2012 22:00',
+  'start': False},
+ {'activity': ['diner'],
   'break': True,
-  'start': False,
-  'time': '19:00'},
- {'activities': ['bavaria', 'com', 'issue 102'],
-  'activity': 'bavaria :: com :: issue 102',
-  'date': '06-30-2011',
-  'datetime': '06-30-2011 17:45',
+  'datetime': '06-21-2012 19:00',
+  'start': False},
+ {'activity': ['brandbeer', 'com', 'issue 102'],
   'break': False,
-  'start': False,
-  'time': '17:45'},
- {'activities': ['bavaria', 'com', 'issue 101'],
-  'activity': 'bavaria :: com :: issue 101',
-  'date': '06-30-2011',
-  'datetime': '06-30-2011 16:45',
+  'datetime': '06-21-2012 17:45',
+  'start': False},
+ {'activity': ['brandbeer', 'com', 'issue 101'],
   'break': False,
-  'start': False,
-  'time': '16:45'},
- {'activities': ['bavaria', 'com', 'issue 99'],
-  'activity': 'bavaria :: com :: issue 99',
-  'date': '06-30-2011',
-  'datetime': '06-30-2011 15:45',
+  'datetime': '06-21-2012 16:45',
+  'start': False},
+ {'activity': ['brandbeer', 'com', 'issue 99'],
   'break': False,
-  'start': False,
-  'time': '15:45'},
- {'activities': ['bavaria', 'com', 'issue 98'],
-  'activity': 'bavaria :: com :: issue 98',
-  'date': '06-30-2011',
-  'datetime': '06-30-2011 15:15',
+  'datetime': '06-21-2012 15:45',
+  'start': False},
+ {'activity': ['brandbeer', 'com', 'issue 98'],
   'break': False,
-  'start': False,
-  'time': '15:15'},
- {'activities': ['bavaria', 'com', 'issue 93'],
-  'activity': 'bavaria :: com :: issue 93',
-  'date': '06-30-2011',
-  'datetime': '06-30-2011 14:15',
+  'datetime': '06-21-2012 15:15',
+  'start': False},
+ {'activity': ['brandbeer', 'com', 'issue 93'],
   'break': False,
-  'start': False,
-  'time': '14:15'},
- {'activities': ['lunch **'],
-  'activity': 'lunch **',
-  'date': '06-30-2011',
-  'datetime': '06-30-2011 12:45',
+  'datetime': '06-21-2012 14:15',
+  'start': False},
+ {'activity': ['lunch'],
   'break': True,
-  'start': False,
-  'time': '12:45'},
- {'activities': ['bavaria', 'com', 'issue 93'],
-  'activity': 'bavaria :: com :: issue 93',
-  'date': '06-30-2011',
-  'datetime': '06-30-2011 12:30',
+  'datetime': '06-21-2012 12:45',
+  'start': False},
+ {'activity': ['brandbeer', 'com', 'issue 93'],
   'break': False,
-  'start': False,
-  'time': '12:30'},
- {'activities': ['bavaria', 'com', 'issue 92'],
-  'activity': 'bavaria :: com :: issue 92',
-  'date': '06-30-2011',
-  'datetime': '06-30-2011 11:30',
+  'datetime': '06-21-2012 12:30',
+  'start': False},
+ {'activity': ['brandbeer', 'com', 'issue 92'],
   'break': False,
-  'start': False,
-  'time': '11:30'},
- {'activities': ['bavaria', 'com', 'issue 91'],
-  'activity': 'bavaria :: com :: issue 91',
-  'date': '06-30-2011',
-  'datetime': '06-30-2011 11:00',
+  'datetime': '06-21-2012 11:30',
+  'start': False},
+ {'activity': ['brandbeer', 'com', 'issue 91'],
   'break': False,
-  'start': False,
-  'time': '11:00'},
- {'activities': ['bavaria', 'com', 'issue 85'],
-  'activity': 'bavaria :: com :: issue 85',
-  'date': '06-30-2011',
-  'datetime': '06-30-2011 10:00',
+  'datetime': '06-21-2012 11:00',
+  'start': False},
+ {'activity': ['brandbeer', 'com', 'issue 85'],
   'break': False,
-  'start': False,
-  'time': '10:00'},
- {'activities': ['start'],
-  'activity': 'start',
-  'date': '06-30-2011',
-  'datetime': '06-30-2011 09:00',
+  'datetime': '06-21-2012 10:00',
+  'start': False},
+ {'activity': ['start'],
   'break': False,
-  'start': False,
-  'time': '09:00'},
- {'activities': ['bavaria', 'com', 'tube promo fix'],
-  'activity': 'bavaria :: com :: tube promo fix',
-  'date': '06-29-2011',
-  'datetime': '06-29-2011 17:22',
+  'datetime': '06-21-2012 09:00',
+  'start': True},
+ {'activity': ['brandbeer', 'com', 'tube promo fix'],
   'break': False,
-  'start': False,
-  'time': '17:22'},
- {'activities': ['bavaria', 'com', 'glow'],
-  'activity': 'bavaria :: com :: glow',
-  'date': '06-29-2011',
-  'datetime': '06-29-2011 16:37',
+  'datetime': '06-20-2012 17:22',
+  'start': False},
+ {'activity': ['brandbeer', 'com', 'glow'],
   'break': False,
-  'start': False,
-  'time': '16:37'},
- {'activities': ['bavaria', 'com', 'pubfacts'],
-  'activity': 'bavaria :: com :: pubfacts',
-  'date': '06-29-2011',
-  'datetime': '06-29-2011 14:15',
+  'datetime': '06-20-2012 16:37',
+  'start': False},
+ {'activity': ['brandbeer', 'com', 'pubfacts'],
   'break': False,
-  'start': False,
-  'time': '14:15'},
- {'activities': ['bavaria',
-                 'com',
-                 'update plone, add audiopool, add patches'],
-  'activity': 'bavaria :: com :: update plone, add audiopool, add patches',
-  'date': '06-29-2011',
-  'datetime': '06-29-2011 12:15',
+  'datetime': '06-20-2012 14:15',
+  'start': False},
+ {'activity': ['brandbeer',
+               'com',
+               'update plone, add audiopool, add patches'],
   'break': False,
-  'start': False,
-  'time': '12:15'},
- {'activities': ['bavaria', 'com', 'functionaliteit'],
-  'activity': 'bavaria :: com :: functionaliteit',
-  'date': '06-29-2011',
-  'datetime': '06-29-2011 10:15',
+  'datetime': '06-20-2012 12:15',
+  'start': False},
+ {'activity': ['brandbeer', 'com', 'functionaliteit'],
   'break': False,
-  'start': False,
-  'time': '10:15'},
- {'activities': ['start'],
-  'activity': 'start',
-  'date': '06-29-2011',
-  'datetime': '06-29-2011 09:14',
+  'datetime': '06-20-2012 10:15',
+  'start': False},
+ {'activity': ['start'],
   'break': False,
-  'start': False,
-  'time': '09:14'},
- {'activities': ['vvv', 'plone patch'],
-  'activity': 'vvv :: plone patch',
-  'date': '06-28-2011',
-  'datetime': '06-28-2011 21:00',
+  'datetime': '06-20-2012 09:14',
+  'start': True},
+ {'activity': ['vouvouvou', 'plone patch'],
   'break': False,
-  'start': False,
-  'time': '21:00'},
- {'activities': ['nuffic', 'plone patch'],
-  'activity': 'nuffic :: plone patch',
-  'date': '06-28-2011',
-  'datetime': '06-28-2011 20:30',
+  'datetime': '06-19-2012 21:00',
+  'start': False},
+ {'activity': ['nufnuf', 'plone patch'],
   'break': False,
-  'start': False,
-  'time': '20:30'},
- {'activities': ['bavaria', 'com', 'plone patch'],
-  'activity': 'bavaria :: com :: plone patch',
-  'date': '06-28-2011',
-  'datetime': '06-28-2011 19:30',
+  'datetime': '06-19-2012 20:30',
+  'start': False},
+ {'activity': ['brandbeer', 'com', 'plone patch'],
   'break': False,
-  'start': False,
-  'time': '19:30'},
- {'activities': ['diner **'],
-  'activity': 'diner **',
-  'date': '06-28-2011',
-  'datetime': '06-28-2011 19:00',
+  'datetime': '06-19-2012 19:30',
+  'start': False},
+ {'activity': ['diner'],
   'break': True,
-  'start': False,
-  'time': '19:00'},
- {'activities': ['bavaria', 'com', 'demo'],
-  'activity': 'bavaria :: com :: demo',
-  'date': '06-28-2011',
-  'datetime': '06-28-2011 18:30',
+  'datetime': '06-19-2012 19:00',
+  'start': False},
+ {'activity': ['brandbeer', 'com', 'demo'],
   'break': False,
-  'start': False,
-  'time': '18:30'},
- {'activities': ['start'],
-  'activity': 'start',
-  'date': '06-28-2011',
-  'datetime': '06-28-2011 09:00',
+  'datetime': '06-19-2012 18:30',
+  'start': False},
+ {'activity': ['start'],
   'break': False,
-  'start': False,
-  'time': '09:00'},
- {'activities': ['bavaria', 'com', 'demo and research'],
-  'activity': 'bavaria :: com :: demo and research',
-  'date': '06-27-2011',
-  'datetime': '06-27-2011 17:28',
+  'datetime': '06-19-2012 09:00',
+  'start': True},
+ {'activity': ['brandbeer', 'com', 'demo and research'],
   'break': False,
-  'start': False,
-  'time': '17:28'},
- {'activities': ['knmp', 'nl', 'script'],
-  'activity': 'knmp :: nl :: script',
-  'date': '06-27-2011',
-  'datetime': '06-27-2011 11:25',
+  'datetime': '06-18-2012 17:28',
+  'start': False},
+ {'activity': ['knapmap', 'nl', 'script'],
   'break': False,
-  'start': False,
-  'time': '11:25'},
- {'activities': ['start'],
-  'activity': 'start',
-  'date': '06-27-2011',
-  'datetime': '06-27-2011 09:43',
+  'datetime': '06-18-2012 11:25',
+  'start': False},
+ {'activity': ['start'],
   'break': False,
-  'start': False,
-  'time': '09:43'},
- {'activities': ['at', 'issue 612 en 613'],
-  'activity': 'at :: issue 612 en 613',
-  'date': '06-23-2011',
-  'datetime': '06-23-2011 15:13',
+  'datetime': '06-18-2012 09:43',
+  'start': True},
+ {'activity': ['cat', 'issue 612 en 613'],
   'break': False,
-  'start': False,
-  'time': '15:13'},
- {'activities': ['bavaria', 'com', 'uitzoeken WebGL/Java Applet'],
-  'activity': 'bavaria :: com :: uitzoeken WebGL/Java Applet',
-  'date': '06-23-2011',
-  'datetime': '06-23-2011 10:00',
+  'datetime': '06-14-2012 15:13',
+  'start': False},
+ {'activity': ['brandbeer', 'com', 'uitzoeken WebGL/Java Applet'],
   'break': False,
-  'start': False,
-  'time': '10:00'},
- {'activities': ['start'],
-  'activity': 'start',
-  'date': '06-23-2011',
-  'datetime': '06-23-2011 09:00',
+  'datetime': '06-14-2012 10:00',
+  'start': False},
+ {'activity': ['start'],
   'break': False,
-  'start': False,
-  'time': '09:00'},
- {'activities': ['knmp', 'nl', 'login removal'],
-  'activity': 'knmp :: nl :: login removal',
-  'date': '06-22-2011',
-  'datetime': '06-22-2011 17:15',
+  'datetime': '06-14-2012 09:00',
+  'start': True},
+ {'activity': ['knapmap', 'nl', 'login removal'],
   'break': False,
-  'start': False,
-  'time': '17:15'},
- {'activities': ['bavaria', 'com', 'release, overleg'],
-  'activity': 'bavaria :: com :: release, overleg',
-  'date': '06-22-2011',
-  'datetime': '06-22-2011 13:15',
+  'datetime': '06-13-2012 17:15',
+  'start': False},
+ {'activity': ['brandbeer', 'com', 'release, overleg'],
   'break': False,
-  'start': False,
-  'time': '13:15'},
- {'activities': ['lunch **'],
-  'activity': 'lunch **',
-  'date': '06-22-2011',
-  'datetime': '06-22-2011 12:45',
+  'datetime': '06-13-2012 13:15',
+  'start': False},
+ {'activity': ['lunch'],
   'break': True,
-  'start': False,
-  'time': '12:45'},
- {'activities': ['bavaria', 'com', 'release, overleg'],
-  'activity': 'bavaria :: com :: release, overleg',
-  'date': '06-22-2011',
-  'datetime': '06-22-2011 12:30',
+  'datetime': '06-13-2012 12:45',
+  'start': False},
+ {'activity': ['brandbeer', 'com', 'release, overleg'],
   'break': False,
-  'start': False,
-  'time': '12:30'},
- {'activities': ['start'],
-  'activity': 'start',
-  'date': '06-22-2011',
-  'datetime': '06-22-2011 09:00',
+  'datetime': '06-13-2012 12:30',
+  'start': False},
+ {'activity': ['start'],
   'break': False,
-  'start': False,
-  'time': '09:00'},
- {'activities': ['bavaria', 'com', 'issue pubfacts'],
-  'activity': 'bavaria :: com :: issue pubfacts',
-  'date': '06-21-2011',
-  'datetime': '06-21-2011 23:59',
+  'datetime': '06-13-2012 09:00',
+  'start': True},
+ {'activity': ['brandbeer', 'com', 'issue pubfacts'],
   'break': False,
-  'start': False,
-  'time': '23:59'},
- {'activities': ['diner **'],
-  'activity': 'diner **',
-  'date': '06-21-2011',
-  'datetime': '06-21-2011 20:15',
+  'datetime': '06-12-2012 23:59',
+  'start': False},
+ {'activity': ['diner'],
   'break': True,
-  'start': False,
-  'time': '20:15'},
- {'activities': ['bavaria', 'com', 'issue pubfacts'],
-  'activity': 'bavaria :: com :: issue pubfacts',
-  'date': '06-21-2011',
-  'datetime': '06-21-2011 18:15',
+  'datetime': '06-12-2012 20:15',
+  'start': False},
+ {'activity': ['brandbeer', 'com', 'issue pubfacts'],
   'break': False,
-  'start': False,
-  'time': '18:15'},
- {'activities': ['lunch **'],
-  'activity': 'lunch **',
-  'date': '06-21-2011',
-  'datetime': '06-21-2011 12:45',
+  'datetime': '06-12-2012 18:15',
+  'start': False},
+ {'activity': ['lunch'],
   'break': True,
-  'start': False,
-  'time': '12:45'},
- {'activities': ['bavaria', 'com', 'issue pubfacts'],
-  'activity': 'bavaria :: com :: issue pubfacts',
-  'date': '06-21-2011',
-  'datetime': '06-21-2011 12:30',
+  'datetime': '06-12-2012 12:45',
+  'start': False},
+ {'activity': ['brandbeer', 'com', 'issue pubfacts'],
   'break': False,
-  'start': False,
-  'time': '12:30'},
- {'activities': ['start'],
-  'activity': 'start',
-  'date': '06-21-2011',
-  'datetime': '06-21-2011 09:15',
+  'datetime': '06-12-2012 12:30',
+  'start': False},
+ {'activity': ['start'],
   'break': False,
-  'start': False,
-  'time': '09:15'},
- {'activities': ['bavaria', 'com', 'issue 91'],
-  'activity': 'bavaria :: com :: issue 91',
-  'date': '06-20-2011',
-  'datetime': '06-20-2011 16:07',
+  'datetime': '06-12-2012 09:15',
+  'start': True},
+ {'activity': ['brandbeer', 'com', 'issue 91'],
   'break': False,
-  'start': False,
-  'time': '16:07'},
- {'activities': ['knmp', 'sfk', 'meeting'],
-  'activity': 'knmp :: sfk :: meeting',
-  'date': '06-20-2011',
-  'datetime': '06-20-2011 10:48',
+  'datetime': '06-11-2012 16:07',
+  'start': False},
+ {'activity': ['knapmap', 'fork', 'meeting'],
   'break': False,
-  'start': False,
-  'time': '10:48'},
- {'activities': ['zeelandia', 'sync'],
-  'activity': 'zeelandia :: sync',
-  'date': '06-20-2011',
-  'datetime': '06-20-2011 09:40',
+  'datetime': '06-11-2012 10:48',
+  'start': False},
+ {'activity': ['new-zeeland', 'sync'],
   'break': False,
-  'start': False,
-  'time': '09:40'},
- {'activities': ['start'],
-  'activity': 'start',
-  'date': '06-20-2011',
-  'datetime': '06-20-2011 09:16',
+  'datetime': '06-11-2012 09:40',
+  'start': False},
+ {'activity': ['start'],
   'break': False,
-  'start': False,
-  'time': '09:16'},
- {'activities': ['bavaria', 'com', 'issue 94'],
-  'activity': 'bavaria :: com :: issue 94',
-  'date': '06-17-2011',
-  'datetime': '06-17-2011 20:07',
+  'datetime': '06-11-2012 09:16',
+  'start': True},
+ {'activity': ['brandbeer', 'com', 'issue 94'],
   'break': False,
-  'start': False,
-  'time': '20:07'},
- {'activities': ['bavaria', 'com', 'issue 89'],
-  'activity': 'bavaria :: com :: issue 89',
-  'date': '06-17-2011',
-  'datetime': '06-17-2011 20:07',
+  'datetime': '06-08-2012 20:07',
+  'start': False},
+ {'activity': ['brandbeer', 'com', 'issue 89'],
   'break': False,
-  'start': False,
-  'time': '20:07'},
- {'activities': ['bavaria', 'com', 'issue 91'],
-  'activity': 'bavaria :: com :: issue 91',
-  'date': '06-17-2011',
-  'datetime': '06-17-2011 12:15',
+  'datetime': '06-08-2012 20:07',
+  'start': False},
+ {'activity': ['brandbeer', 'com', 'issue 91'],
   'break': False,
-  'start': False,
-  'time': '12:15'},
- {'activities': ['bavaria', 'com', 'issue 89'],
-  'activity': 'bavaria :: com :: issue 89',
-  'date': '06-17-2011',
-  'datetime': '06-17-2011 11:45',
+  'datetime': '06-08-2012 12:15',
+  'start': False},
+ {'activity': ['brandbeer', 'com', 'issue 89'],
   'break': False,
-  'start': False,
-  'time': '11:45'},
- {'activities': ['bavaria', 'com', 'issue 105'],
-  'activity': 'bavaria :: com :: issue 105',
-  'date': '06-17-2011',
-  'datetime': '06-17-2011 10:00',
+  'datetime': '06-08-2012 11:45',
+  'start': False},
+ {'activity': ['brandbeer', 'com', 'issue 105'],
   'break': False,
-  'start': False,
-  'time': '10:00'},
- {'activities': ['start'],
-  'activity': 'start',
-  'date': '06-17-2011',
-  'datetime': '06-17-2011 09:00',
+  'datetime': '06-08-2012 10:00',
+  'start': False},
+ {'activity': ['start'],
   'break': False,
-  'start': False,
-  'time': '09:00'},
- {'activities': ['at', 'issue 624'],
-  'activity': 'at :: issue 624',
-  'date': '06-16-2011',
-  'datetime': '06-16-2011 17:15',
+  'datetime': '06-08-2012 09:00',
+  'start': True},
+ {'activity': ['cat', 'issue 624'],
   'break': False,
-  'start': False,
-  'time': '17:15'},
- {'activities': ['at', 'issue 593'],
-  'activity': 'at :: issue 593',
-  'date': '06-16-2011',
-  'datetime': '06-16-2011 16:45',
+  'datetime': '06-07-2012 17:15',
+  'start': False},
+ {'activity': ['cat', 'issue 593'],
   'break': False,
-  'start': False,
-  'time': '16:45'},
- {'activities': ['at', 'issue 323'],
-  'activity': 'at :: issue 323',
-  'date': '06-16-2011',
-  'datetime': '06-16-2011 16:15',
+  'datetime': '06-07-2012 16:45',
+  'start': False},
+ {'activity': ['cat', 'issue 323'],
   'break': False,
-  'start': False,
-  'time': '16:15'},
- {'activities': ['at', 'issue 549'],
-  'activity': 'at :: issue 549',
-  'date': '06-16-2011',
-  'datetime': '06-16-2011 15:45',
+  'datetime': '06-07-2012 16:15',
+  'start': False},
+ {'activity': ['cat', 'issue 549'],
   'break': False,
-  'start': False,
-  'time': '15:45'},
- {'activities': ['at', 'issue 613'],
-  'activity': 'at :: issue 613',
-  'date': '06-16-2011',
-  'datetime': '06-16-2011 13:15',
+  'datetime': '06-07-2012 15:45',
+  'start': False},
+ {'activity': ['cat', 'issue 613'],
   'break': False,
-  'start': False,
-  'time': '13:15'},
- {'activities': ['lunch **'],
-  'activity': 'lunch **',
-  'date': '06-16-2011',
-  'datetime': '06-16-2011 12:45',
+  'datetime': '06-07-2012 13:15',
+  'start': False},
+ {'activity': ['lunch'],
   'break': True,
-  'start': False,
-  'time': '12:45'},
- {'activities': ['at', 'issue 613'],
-  'activity': 'at :: issue 613',
-  'date': '06-16-2011',
-  'datetime': '06-16-2011 12:30',
+  'datetime': '06-07-2012 12:45',
+  'start': False},
+ {'activity': ['cat', 'issue 613'],
   'break': False,
-  'start': False,
-  'time': '12:30'},
- {'activities': ['at', 'issue 566'],
-  'activity': 'at :: issue 566',
-  'date': '06-16-2011',
-  'datetime': '06-16-2011 10:30',
+  'datetime': '06-07-2012 12:30',
+  'start': False},
+ {'activity': ['cat', 'issue 566'],
   'break': False,
-  'start': False,
-  'time': '10:30'},
- {'activities': ['start'],
-  'activity': 'start',
-  'date': '06-16-2011',
-  'datetime': '06-16-2011 09:00',
+  'datetime': '06-07-2012 10:30',
+  'start': False},
+ {'activity': ['start'],
   'break': False,
-  'start': False,
-  'time': '09:00'},
- {'activities': ['bavaria', 'com', 'issue 105'],
-  'activity': 'bavaria :: com :: issue 105',
-  'date': '06-15-2011',
-  'datetime': '06-15-2011 17:15',
+  'datetime': '06-07-2012 09:00',
+  'start': True},
+ {'activity': ['brandbeer', 'com', 'issue 105'],
   'break': False,
-  'start': False,
-  'time': '17:15'},
- {'activities': ['vvv', 'patch'],
-  'activity': 'vvv :: patch',
-  'date': '06-15-2011',
-  'datetime': '06-15-2011 15:15',
+  'datetime': '06-06-2012 17:15',
+  'start': False},
+ {'activity': ['vouvouvou', 'patch'],
   'break': False,
-  'start': False,
-  'time': '15:15'},
- {'activities': ['nuffic', 'issues'],
-  'activity': 'nuffic :: issues',
-  'date': '06-15-2011',
-  'datetime': '06-15-2011 13:15',
+  'datetime': '06-06-2012 15:15',
+  'start': False},
+ {'activity': ['nufnuf', 'issues'],
   'break': False,
-  'start': False,
-  'time': '13:15'},
- {'activities': ['lunch **'],
-  'activity': 'lunch **',
-  'date': '06-15-2011',
-  'datetime': '06-15-2011 12:45',
+  'datetime': '06-06-2012 13:15',
+  'start': False},
+ {'activity': ['lunch'],
   'break': True,
-  'start': False,
-  'time': '12:45'},
- {'activities': ['nuffic', 'issues'],
-  'activity': 'nuffic :: issues',
-  'date': '06-15-2011',
-  'datetime': '06-15-2011 12:30',
+  'datetime': '06-06-2012 12:45',
+  'start': False},
+ {'activity': ['nufnuf', 'issues'],
   'break': False,
-  'start': False,
-  'time': '12:30'},
- {'activities': ['fenelab', 'style fix and release'],
-  'activity': 'fenelab :: style fix and release',
-  'date': '06-15-2011',
-  'datetime': '06-15-2011 10:30',
+  'datetime': '06-06-2012 12:30',
+  'start': False},
+ {'activity': ['penelap', 'style fix and release'],
   'break': False,
-  'start': False,
-  'time': '10:30'},
- {'activities': ['start'],
-  'activity': 'start',
-  'date': '06-15-2011',
-  'datetime': '06-15-2011 09:00',
+  'datetime': '06-06-2012 10:30',
+  'start': False},
+ {'activity': ['start'],
   'break': False,
-  'start': False,
-  'time': '09:00'},
- {'activities': ['at', 'issue 612'],
-  'activity': 'at :: issue 612',
-  'date': '06-14-2011',
-  'datetime': '06-14-2011 17:45',
+  'datetime': '06-06-2012 09:00',
+  'start': True},
+ {'activity': ['cat', 'issue 612'],
   'break': False,
-  'start': False,
-  'time': '17:45'},
- {'activities': ['lunch **'],
-  'activity': 'lunch **',
-  'date': '06-14-2011',
-  'datetime': '06-14-2011 12:45',
+  'datetime': '06-05-2012 17:45',
+  'start': False},
+ {'activity': ['lunch'],
   'break': True,
-  'start': False,
-  'time': '12:45'},
- {'activities': ['at', 'issue 612'],
-  'activity': 'at :: issue 612',
-  'date': '06-14-2011',
-  'datetime': '06-14-2011 12:30',
+  'datetime': '06-05-2012 12:45',
+  'start': False},
+ {'activity': ['cat', 'issue 612'],
   'break': False,
-  'start': False,
-  'time': '12:30'},
- {'activities': ['at', 'overleg'],
-  'activity': 'at :: overleg',
-  'date': '06-14-2011',
-  'datetime': '06-14-2011 10:00',
+  'datetime': '06-05-2012 12:30',
+  'start': False},
+ {'activity': ['cat', 'overleg'],
   'break': False,
-  'start': False,
-  'time': '10:00'},
- {'activities': ['start'],
-  'activity': 'start',
-  'date': '06-14-2011',
-  'datetime': '06-14-2011 09:00',
+  'datetime': '06-05-2012 10:00',
+  'start': False},
+ {'activity': ['start'],
   'break': False,
-  'start': False,
-  'time': '09:00'},
- {'activities': ['pareto', 'feestdag'],
-  'activity': 'pareto :: feestdag',
-  'date': '06-13-2011',
-  'datetime': '06-13-2011 17:00',
+  'datetime': '06-05-2012 09:00',
+  'start': True},
+ {'activity': ['proleto', 'feestdag'],
   'break': False,
-  'start': False,
-  'time': '17:00'},
- {'activities': ['start'],
-  'activity': 'start',
-  'date': '06-13-2011',
-  'datetime': '06-13-2011 09:00',
+  'datetime': '06-04-2012 17:00',
+  'start': False},
+ {'activity': ['start'],
   'break': False,
-  'start': False,
-  'time': '09:00'},
- {'activities': ['bavaria', 'com', 'beer selector'],
-  'activity': 'bavaria :: com :: beer selector',
-  'date': '06-10-2011',
-  'datetime': '06-10-2011 21:00',
+  'datetime': '06-04-2012 09:00',
+  'start': True},
+ {'activity': ['brandbeer', 'com', 'beer selector'],
   'break': False,
-  'start': False,
-  'time': '21:00'},
- {'activities': ['diner **'],
-  'activity': 'diner **',
-  'date': '06-10-2011',
-  'datetime': '06-10-2011 19:00',
+  'datetime': '06-01-2012 21:00',
+  'start': False},
+ {'activity': ['diner'],
   'break': True,
-  'start': False,
-  'time': '19:00'},
- {'activities': ['bavaria', 'com', 'beer selector'],
-  'activity': 'bavaria :: com :: beer selector',
-  'date': '06-10-2011',
-  'datetime': '06-10-2011 17:00',
+  'datetime': '06-01-2012 19:00',
+  'start': False},
+ {'activity': ['brandbeer', 'com', 'beer selector'],
   'break': False,
-  'start': False,
-  'time': '17:00'},
- {'activities': ['start'],
-  'activity': 'start',
-  'date': '06-10-2011',
-  'datetime': '06-10-2011 09:00',
+  'datetime': '06-01-2012 17:00',
+  'start': False},
+ {'activity': ['start'],
   'break': False,
-  'start': False,
-  'time': '09:00'},
- {'activities': ['bavaria', 'com', 'pub facts'],
-  'activity': 'bavaria :: com :: pub facts',
-  'date': '06-09-2011',
-  'datetime': '06-09-2011 21:00',
+  'datetime': '06-01-2012 09:00',
+  'start': True},
+ {'activity': ['brandbeer', 'com', 'pub facts'],
   'break': False,
-  'start': False,
-  'time': '21:00'},
- {'activities': ['diner **'],
-  'activity': 'diner **',
-  'date': '06-09-2011',
-  'datetime': '06-09-2011 19:00',
+  'datetime': '05-31-2012 21:00',
+  'start': False},
+ {'activity': ['diner'],
   'break': True,
-  'start': False,
-  'time': '19:00'},
- {'activities': ['bavaria', 'com', 'quality'],
-  'activity': 'bavaria :: com :: quality',
-  'date': '06-09-2011',
-  'datetime': '06-09-2011 17:00',
+  'datetime': '05-31-2012 19:00',
+  'start': False},
+ {'activity': ['brandbeer', 'com', 'quality'],
   'break': False,
-  'start': False,
-  'time': '17:00'},
- {'activities': ['bavaria', 'com', 'tricoid link and rotation'],
-  'activity': 'bavaria :: com :: tricoid link and rotation',
-  'date': '06-09-2011',
-  'datetime': '06-09-2011 13:00',
+  'datetime': '05-31-2012 17:00',
+  'start': False},
+ {'activity': ['brandbeer', 'com', 'tricoid link and rotation'],
   'break': False,
-  'start': False,
-  'time': '13:00'},
- {'activities': ['start'],
-  'activity': 'start',
-  'date': '06-09-2011',
-  'datetime': '06-09-2011 09:00',
+  'datetime': '05-31-2012 13:00',
+  'start': False},
+ {'activity': ['start'],
   'break': False,
-  'start': False,
-  'time': '09:00'},
- {'activities': ['bavaria', 'com', 'tricoid link and rotation'],
-  'activity': 'bavaria :: com :: tricoid link and rotation',
-  'date': '06-08-2011',
-  'datetime': '06-08-2011 17:00',
+  'datetime': '05-31-2012 09:00',
+  'start': True},
+ {'activity': ['brandbeer', 'com', 'tricoid link and rotation'],
   'break': False,
-  'start': False,
-  'time': '17:00'},
- {'activities': ['bavaria', 'com', 'background blue'],
-  'activity': 'bavaria :: com :: background blue',
-  'date': '06-08-2011',
-  'datetime': '06-08-2011 16:00',
+  'datetime': '05-30-2012 17:00',
+  'start': False},
+ {'activity': ['brandbeer', 'com', 'background blue'],
   'break': False,
-  'start': False,
-  'time': '16:00'},
- {'activities': ['bavaria', 'com', 'translation'],
-  'activity': 'bavaria :: com :: translation',
-  'date': '06-08-2011',
-  'datetime': '06-08-2011 15:00',
+  'datetime': '05-30-2012 16:00',
+  'start': False},
+ {'activity': ['brandbeer', 'com', 'translation'],
   'break': False,
-  'start': False,
-  'time': '15:00'},
- {'activities': ['nuffic', 'issues'],
-  'activity': 'nuffic :: issues',
-  'date': '06-08-2011',
-  'datetime': '06-08-2011 13:00',
+  'datetime': '05-30-2012 15:00',
+  'start': False},
+ {'activity': ['nufnuf', 'issues'],
   'break': False,
-  'start': False,
-  'time': '13:00'},
- {'activities': ['start'],
-  'activity': 'start',
-  'date': '06-08-2011',
-  'datetime': '06-08-2011 09:00',
+  'datetime': '05-30-2012 13:00',
+  'start': False},
+ {'activity': ['start'],
   'break': False,
-  'start': False,
-  'time': '09:00'},
- {'activities': ['fenelab', 'additional styling'],
-  'activity': 'fenelab :: additional styling',
-  'date': '06-07-2011',
-  'datetime': '06-07-2011 17:00',
+  'datetime': '05-30-2012 09:00',
+  'start': True},
+ {'activity': ['penelap', 'additional styling'],
   'break': False,
-  'start': False,
-  'time': '17:00'},
- {'activities': ['floravontuur', 'issues'],
-  'activity': 'floravontuur :: issues',
-  'date': '06-07-2011',
-  'datetime': '06-07-2011 10:00',
+  'datetime': '05-29-2012 17:00',
+  'start': False},
+ {'activity': ['adventure', 'issues'],
   'break': False,
-  'start': False,
-  'time': '10:00'},
- {'activities': ['start'],
-  'activity': 'start',
-  'date': '06-07-2011',
-  'datetime': '06-07-2011 09:00',
+  'datetime': '05-29-2012 10:00',
+  'start': False},
+ {'activity': ['start'],
   'break': False,
-  'start': False,
-  'time': '09:00'},
- {'activities': ['floravontuur', 'issues'],
-  'activity': 'floravontuur :: issues',
-  'date': '06-06-2011',
-  'datetime': '06-06-2011 17:00',
+  'datetime': '05-29-2012 09:00',
+  'start': True},
+ {'activity': ['adventure', 'issues'],
   'break': False,
-  'start': False,
-  'time': '17:00'},
- {'activities': ['start'],
-  'activity': 'start',
-  'date': '06-06-2011',
-  'datetime': '06-06-2011 09:00',
+  'datetime': '05-28-2012 17:00',
+  'start': False},
+ {'activity': ['start'],
   'break': False,
-  'start': False,
-  'time': '09:00'}]
+  'datetime': '05-28-2012 09:00',
+  'start': True}]

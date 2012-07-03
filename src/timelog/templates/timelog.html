@@ -16,38 +16,57 @@
 {% endblock %}
 
 {% block content %}
-    <p>
-        <span class="todo">
-            First use pointers still need to be implemented.
-        </span>
-    </p>    
+    <p><span class="todo">First use pointers still need to be implemented.</span></p>    
     <div class="new">
-        <div class="entry{% if weekday %} {{weekday}}{% endif %}">
+        <div class="entry">
           {% if time %}
             <span class="time">{{time}}</span>
             <span class="line">&mdash;</span>
           {% endif %}
           {% if duration %}
-            <span class="duration">Duration: {{time}}</span>
+            <span class="duration"><em>Duration:</em> {{time}}</span>
           {% endif %}
             <form action="/" method="post">
                 <fieldset>
                     <legend>Create new Activity</legend>
                     <br/>
+                    {% if step == 2 %}
+                        <p class="first_use">
+                            This is the screen you normally see after login.
+                            Here you can log your activities. If you have 
+                            activities in your log, they will show up in a drop
+                            down menu.  
+                            <br /><br />
+                            If anything is filled in for 
+                            <strong>New activity</strong>, the existing one 
+                            will not count.
+                            <br /><br />
+                            By selecting <strong>Break</strong> the time spent 
+                            will not be counted in the log.
+                            <br /><br />
+                            Create a new activity and take the next step in 
+                            the walk through. 
+                        </p>
+                    {% endif %}
                     <p>
                         <label for="new">New activity</label>
                         <input name="new" size="55"/>
                     </p>
-                    {% if activity %}
+                    <p class="form-help">
+                        You can create sub activities by separating main 
+                        activities and sub activities with {{separator}}. You 
+                        can change the separator in your 
+                        <a href="/settings">settings</a>.
+                    </p>
+                    {% if activities %}
                     <p>
                         <label for="existing">Existing activity</label>
                         <select name="existing">
-                          {% for a in activity %}
-                            <option>{{a}}</option>
+                          {% for activity in activities %}
+                            <option>{% for a in activity %}{{a}}{% if not loop.last %} <span class="devider">{{separator}}</span> {% endif %}{% endfor %}</option>
                           {% endfor %}
                         </select>
                     </p>
-                    {% endif %}
                     <p class="form-help">
                         Either select an old activity or enter a new one. The
                         new activity field always trumps the existing, so only 
@@ -58,10 +77,38 @@
                             need to look for a better solution.
                         </span>
                     </p>
+                    {% endif %}
+                    <p style="display:none">
+                        <label>Time</label>
+                        <select name="day">
+                          <option>day</option>  
+                          {% for d in days %}
+                            <option>{{d.strftime(date_repr)}}</option>
+                          {% endfor %}
+                        </select>
+                        
+                        <select name="hour">
+                          <option>HH</option>
+                          {% for i in range(24) %}
+                            <option>{{'%02d' % i}}</option>
+                          {% endfor %}
+                        </select>:<select name="min">
+                          <option>MM</option>
+                          {% for i in range(0, 60, 5) %}
+                            <option>{{'%02d' % i}}</option>
+                          {% endfor %}
+                        </select>
+                        
+                    </p>
+                    {% if i %}
+                    {% endif %}
                     <p>
                         <label for="break">Break</label>
                         <input name="break" type="checkbox"/> <span class="form-help">breaktime is not counted</span>
                     </p>
+                    {% if step == 2 %}
+                        <input type="hidden" value="3" name="step" />
+                    {% endif %}
                 </fieldset>
                 <div class="controls"><input class="button" type="submit" value="Track"></div>
             </form>
@@ -69,32 +116,30 @@
     </div>
 
     <section class="log">
-      {% for entry in data %}
-        <div class="entry{% if entry.weekday %} {{entry.weekday}}{% endif %}{% if entry.break %} break{% endif %}{% if entry.start %} start{% endif %}{% if entry.hours %} duration-{{entry.hours}}{% endif %}">
-          {% if entry.date and entry.start %}
-            <span class="date">{{entry.weekday}} &ndash; {{entry.date}}</span> &mdash;
+      {% for entry in entries %}
+        {% if entry.data.datetime %}
+        <div class="entry {{ entry.data.datetime.strftime('%a').lower() }}{% if entry.data.break %} break{% endif %}{% if entry.data.start %} start{% endif %}{% if entry.meta.hours %} duration-{{entry.meta.hours}}{% endif %}">
+          {% if entry.data.start %}
+            <span class="date">{{ entry.data.datetime.strftime('%A &ndash; week %W &ndash; ' + date_repr)}}</span> &mdash;
           {% endif %}
-          {% if entry.time %}
-            <span class="time">{{entry.time}}</span>
-          {% endif %}
-          {% if entry.date or entry.time %}
+            <span class="time">{{ entry.data.datetime.strftime(time_repr) }}</span>
             <span class="line">&mdash;</span>
-          {% endif %}
-          {% if entry.activities %}
-            <span class="activity{% if entry.hidden %} hidden{% endif %}">
-              {% for activity in entry.activities %}
-                {{activity}}
+          {% if entry.data.activity %}
+            <span class="activity{% if entry.data.hidden %} hidden{% endif %}">
+              {% for a in entry.data.activity %}
+                {{a}}
                 {% if not loop.last %}<span class="devider">{{separator}}</span>{% endif %}
               {% endfor %}
             </span>
           {% endif %}
-            <span class="edit">
-                {% if not entry.start %}&nbsp;|&nbsp;{% endif %}<a href="/?edit={{entry.i}}">edit</a>
-            </span>
-          {% if entry.duration %}
-            <span class="duration">Duration: {{entry.duration}}</span>
+          {% if entry.meta.duration %}
+            <span class="duration"><em>Duration:</em> {{entry.meta.duration}}</span>
           {% endif %}
+            <span class="edit">
+                <a href="/?delete={{entry.meta.i}}">delete</a>&nbsp;|&nbsp;<a href="/?edit={{entry.meta.i}}">edit</a>{% if not entry.data.start and not entry.data.break %}&nbsp;|&nbsp;{% endif %}
+            </span>
         </div>
+        {% endif %}
       {% endfor %}
     </section>
 

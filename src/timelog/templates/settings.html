@@ -18,50 +18,71 @@
 {% block logout %}<li><a href="{{ url }}">{{ url_linktext }}</a></li>{% endblock %}
 
 {% block content %}
+    {% if changed %}
+    <dl class="message info">
+        <dt>Info</dt>
+        <dd>Updated: 
+            {% for c in changed %}{% if not loop.last and not loop.first %}, {% endif %}{% if loop.last and not loop.first %} and {% endif %} {{c}}{% endfor %}.
+        </dd>
+    </dl>
+    {% endif %}
     <form action="/settings" method="post">
         <fieldset>
             <legend>Change your personal settings</legend>
             <br/>
+            {% if step == 1 %}
+                <p class="first_use">
+                    Welcome to <strong>Timelog</strong>. We will start by quickly walking 
+                    through the application. 
+                    <br /><br />
+                    We start at <strong>Settings</strong> because you at least
+                    have to set your <strong>Current time</strong>, because 
+                    your logging might be off by several hours otherwise. 
+                    <br /><br />
+                    Also look through the other settings. For instance 
+                    <strong>Date representation</strong> can be very confusing 
+                    if it differs from what you are used to.
+                    <br /><br />
+                    Change the settings that need changing and 
+                    <strong>update</strong> for the next step in the walk through. 
+                </p>
+            {% endif %}
             <p>
-                <label for="separator">separator</label>
-                <input name="separator" />
+                <label for="time_zone">Current time</label>
+                <select name="time_zone">
+                  {% for time in times %}
+                    <option value="{{time.td}}"{% if time_zone == time.td %} selected="selected"{% endif %}>{{time.representation}}</option>
+                  {% endfor %}
+                </select>
             </p>
             <p class="form-help">
-                Is used between main and sub activities to show where one ends
-                and the other begins.
-                <span class="todo">
-                Maybe a bit of a fancifull option, could be that later on 
-                there will not be a choice. It is quite possible nobody cares
-                about setting a custom separator.
-                </span>
+                Determine the timezone you are in by selecting the current time.
             </p>
             <p>
                 <label for="date_repr">Date representation</label>
-                <input name="date_repr" />
+                <select name="date_repr">
+                  {% for date in date_vars %}
+                    <option value="{{date}}"{% if date_repr == date %} selected="selected"{% endif %}>{{now.strftime(date)}}</option>
+                  {% endfor %}
+                </select>
             </p>
             <p class="form-help">
-                <span class="todo">
-                Right now you can set, when functional (not yet) your local
-                representation with python strftime strings. For ease during
-                development of the app. This will probably move towards a set 
-                of sensible defaults in a dropdown.
-                </span>
+                Choose the example date format most to you liking.
             </p>
             <p>
                 <label for="time_repr">Time representation</label>
-                <input name="time_repr" />
+                <select name="time_repr">
+                  {% for time in time_vars %}
+                    <option value="{{time}}"{% if time_repr == time %} selected="selected"{% endif %}>{{now.strftime(time)}}</option>
+                  {% endfor %}
+                </select>
             </p>
             <p class="form-help">
-                <span class="todo">
-                Right now you can set, when functional (not yet) your local
-                representation with python strftime strings. For ease during
-                development of the app. This will probably move towards a set 
-                of sensible defaults in a dropdown.
-                </span>
+                Choose the example time format most to you liking.
             </p>
             <p>
-                <label for="start_time">New day time</label>
-                <input name="start_time"/>
+                <label for="new_day_time">New day time</label>
+                <input name="new_day_time" value="{{new_day_time}}"/>
             </p>
             <p class="form-help">
                 From what time will logging into Timelog create a new day start 
@@ -73,14 +94,32 @@
             </p>
             <p>
                 <label for="time_span">Time span</label>
-                <input name="start_time"/> <em>in months</em>
+                <input name="time_span" value="{{time_span}}"/> <em>in months</em>
             </p>
+            {% if errors and errors['time_span'] %}
+            <dl class="message error">
+                <dt>Error</dt>
+                <dd>{{errors['time_span']}}</dd>
+            </dl>
+            {% endif %}
             <p class="form-help">
                 All the activities within the set timespan will be used for 
                 the timelog and report generation. In case of the report 
                 generation it determines the maximum choice you have in the 
                 dropdowns.   
             </p>
+            <p>
+                <label for="separator">Separator</label>
+                <input name="separator" value="{{separator}}"/>
+            </p>
+            <p class="form-help">
+                Is used between main and sub activities to show where one ends
+                and the other begins.
+            </p>
+            {% if step == 1 %}
+                <input type="hidden" value="2" name="step" />
+            {% endif %}
         </fieldset>
+        <div class="controls"><input class="button" type="submit" value="Update" /></div>
     </form>
 {% endblock %}

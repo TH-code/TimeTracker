@@ -112,7 +112,7 @@ td.total
   .button
     background-color: $blue4
     +filter-gradient(#08153a, #08153a, vertical)
-    +background-image(linear-gradient(top, $grey2 16%,#ffffff 27%,$grey 29%, $grey2 87%))
+    +background-image(linear-gradient(top, #fff 16%,#ffffff 27%,darken($grey2, 10) 29%, #fff 87%))
     +link-colors($red1 !important, #000 !important)
     +box-shadow(2px 3px 5px $red1, 0 0 3px #fff inset)
     +text-shadow(0 0 2px #fff, 0 0 2px $grey2, 0 0 5px $grey2, 0 0 10px $grey)
@@ -148,6 +148,16 @@ td.total
       bottom: 2px solid #fff
     color: #fff
     padding: 1em !important
+
 .todo
   font-weight: bold
   color: $red4 !important
+  
+.first_use
+  background: #fff
+  border: 2px solid $blue3
+  color: $blue2
+  
+.first_use
+  padding: 1em
+  +border-radius(1em)
