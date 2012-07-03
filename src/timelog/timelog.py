@@ -166,6 +166,9 @@ class Timelog(Base):
                 data.log.insert(0, start_entry)
                 data.put()
 
+        template, values, user = self.get_base_values()
+        template = jinja_environment.get_template('timelog.html')
+
         days = []
         for i in range((31 * data.time_span) + 1, -1, -1):
             _min = now + timedelta(days=(-31 * data.time_span))
@@ -189,7 +192,6 @@ class Timelog(Base):
             'activities': activities,
             'separator': data.separator,
         })
-        self.redirect('/')
     
         return template, values, user
 
