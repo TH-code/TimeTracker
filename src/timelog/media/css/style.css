@@ -178,7 +178,7 @@ td.total { background-color: white; }
 
 .ms-1 { font-size: 1em; }
 
-.ms-2, h3, .description, .new legend, .report form legend, .settings form legend, .big { font-size: 1.5em; }
+.ms-2, h3, .description, .legend span, .new legend, .report form legend, .settings form legend, .big { font-size: 1.5em; }
 
 .ms-3 { font-size: 2.25em; }
 
@@ -195,7 +195,7 @@ h1 a, h2 a { text-decoration: none; }
 
 h1 { text-transform: none; margin: -0.05em 0 0.1em; }
 
-.date, .time, .start { font-weight: bold; font-family: georgia; font-style: italic; }
+.date, .time, .legend, .duration { font-family: "Lekton", monospace; font-style: italic; }
 
 .break { font-style: italic; }
 
@@ -239,12 +239,17 @@ form { overflow: hidden; padding: 1em; margin: 2em 0; }
 .new input, .report form input, .settings form input, .new select, .report form select, .settings form select { max-width: 25em; }
 .new form, .report form form, .settings form form { margin: 0; }
 
+.nick { color: #d6d0d7; }
+
 .edit { display: none; }
 
 .entry { padding: 0.25em 0.5em; position: relative; max-width: 50em; }
 .entry:hover .edit { display: inline; }
 
 .time, .line { left: -4em; position: absolute; top: -0.7em; }
+
+.legend { margin-left: -4em; }
+.legend span { position: static; }
 
 .date { left: -11em; }
 

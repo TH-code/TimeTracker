@@ -42,6 +42,7 @@ class Base(webapp2.RequestHandler):
 
             values = {'url': url, 
                       'url_linktext': url_linktext,
+                      'user': user,
                       'uid': uid,
                       'data': data,
                       'now': now}
@@ -165,9 +166,9 @@ class Timelog(Base):
             if last_date != now_date:
                 data.log.insert(0, start_entry)
                 data.put()
-
-        template, values, user = self.get_base_values()
-        template = jinja_environment.get_template('timelog.html')
+        
+#        template, values, user = self.get_base_values()
+#        template = jinja_environment.get_template('timelog.html')
 
         days = []
         for i in range((31 * data.time_span) + 1, -1, -1):
@@ -177,7 +178,6 @@ class Timelog(Base):
             if int(_cur.strftime('%m')) != wrong_month:
                 days.append(_cur)
         
-        most_recent = data.log[0] if data.log else False
         values.update({
             'data': data,
             'entries': entries,
@@ -188,7 +188,8 @@ class Timelog(Base):
             'date': now.strftime(data.date_repr),
             'date_repr': data.date_repr,
             'weekday': now.strftime('%a').lower(),
-            'duration': duration(now - most_recent['datetime']) if most_recent else (0,0),
+            'duration': duration(now - data.log[0]['datetime']
+                                 ) if data.log else '',
             'activities': activities,
             'separator': data.separator,
         })
