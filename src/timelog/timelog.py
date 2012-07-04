@@ -47,15 +47,11 @@ class Base(webapp2.RequestHandler):
                       'data': data,
                       'now': now}
             
-            login = int(self.request.get('login', u'0'))
-            if login:
-                values['login'] = login
-            
             step = int(self.request.get('step', u'0'))
             if step:
                 values['step'] = step
         else:
-            url = users.create_login_url() + '?login=1'
+            url = users.create_login_url()
             url_linktext = 'Login'
             values = {'url': url, 
                       'url_linktext': url_linktext }
@@ -138,18 +134,21 @@ class Timelog(Base):
         
         template = jinja_environment.get_template('timelog.html')
         
-        login = values.get('login', 0) 
-        step = values.get('step', 0) 
-        now = values.get('now', None) 
         data = values.get('data', None) 
+        now = values.get('now', None) 
+        step = values.get('step', 0)
+        experienced = len(data.log)
 
         entries, activities = self.massage(data.log)
         try:
             most_recent = entries[0]['data']
+            last_date = most_recent['datetime'].strftime(data.date_repr)
+            now_date = now.strftime(data.date_repr)
+            login = last_date != now_date
         except IndexError:
-            most_recent = None
-        
-        if not most_recent and login and not step:
+            login = True
+
+        if not experienced and login and not step:
             self.redirect('/settings?step=1')
             return template, values, user
         if step == 2 or login:
@@ -157,16 +156,9 @@ class Timelog(Base):
                            'datetime': now,
                            'start': True,
                            'break': False }
-        if step == 2 and not most_recent:
             data.log.insert(0, start_entry)
             data.put()
-        if most_recent and login:
-            last_date = most_recent['datetime'].strftime(data.date_repr)
-            now_date = now.strftime(data.date_repr)
-            if last_date != now_date:
-                data.log.insert(0, start_entry)
-                data.put()
-        
+            self.redirect('/')
 #        template, values, user = self.get_base_values()
 #        template = jinja_environment.get_template('timelog.html')
 
@@ -216,18 +208,23 @@ class Timelog(Base):
 #        if dd and hh and mm:
 #            import pdb; pdb.set_trace()
 
-        activity = [i.strip() for i in self.request.get('new').split(data.separator)]
-        activity = activity or [i.strip() for i in self.request.get('existing').split(data.separator)]
-        data.log.insert(0, {'activity': activity,                
-                            'datetime': values['now'],
-                            'start': activity == ['start'],
-                            'break': True if self.request.get('break') else False })
-        data.put()
+        activity = self.request.get('new') 
+        existing = self.request.get('existing')
+        if activity or existing:
+            activity = [i.strip() for i in 
+                        (activity or existing).split(data.separator)]
+            data.log.insert(0, {
+                'activity': activity,                
+                'datetime': values['now'],
+                'start': activity == ['start'],
+                'break': True if self.request.get('break') else False })
+            data.put()
         
         step = values.get('step', 0) 
         if step == 3:
             self.redirect('/report?step=3')
-        self.redirect('/')
+        else:
+            self.redirect('/')
         self.response.out.write(template.render(values))
 
 

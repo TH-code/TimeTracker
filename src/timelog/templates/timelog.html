@@ -62,10 +62,11 @@
                         can change the separator in your 
                         <a href="/settings">settings</a>.
                     </p>
-                    {% if activities %}
+                    {% if activities or step == 2 %}
                     <p>
                         <label for="existing">Existing activity</label>
                         <select name="existing">
+                          <option></option>
                           {% for activity in activities %}
                             <option>{% for a in activity %}{{a}}{% if not loop.last %} <span class="devider">{{separator}}</span> {% endif %}{% endfor %}</option>
                           {% endfor %}
@@ -136,7 +137,7 @@
             <span class="duration">{{entry.meta.duration}}</span>
           {% endif %}
             <span class="edit">
-                <a href="/?delete={{entry.meta.i}}">delete</a>&nbsp;|&nbsp;<a href="/?edit={{entry.meta.i}}">edit</a>{% if not entry.data.start and not entry.data.break %}&nbsp;&mdash;&nbsp;{% endif %}
+                <a href="/?delete={{entry.meta.i}}">delete</a>&nbsp;|&nbsp;<a href="/?edit={{entry.meta.i}}">edit</a>{% if not entry.data.break %}&nbsp;&mdash;&nbsp;{% endif %}
             </span>
         </div>
         {% endif %}
