@@ -21,7 +21,6 @@ defaults = {
     'new_day_time': (0, 0),
     'time_span': 2,
     'time_zone': 0,
-    'first_time': True,
     'entries': [],
     'log': [],
 }
@@ -93,7 +92,6 @@ class Base(webapp2.RequestHandler):
                 id=uid,
                 separator = defaults['separator'],
                 date_repr = defaults['date_repr'],
-                first_time = defaults['first_time'],
                 time_repr = defaults['time_repr'],
                 new_day_time = defaults['new_day_time'],
                 time_span = defaults['time_span'],
