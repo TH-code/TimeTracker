@@ -47,7 +47,21 @@
                     <strong>update</strong> for the next step in the walk through. 
                 </p>
             {% endif %}
+            
+            {% if step == 4 %}
+                <p class="first_use">
+                    Welcome to <strong>Timelog</strong>. We will start by quickly walking 
+                    through the application.  
+                </p>
+            {% endif %}
             <p>
+                {% if step == 4 %}
+                    <p class="first_use">
+                        We start at <strong>Settings</strong> because you at least
+                        have to set your <strong>Current time</strong>, because 
+                        your logging might be off by several hours otherwise. 
+                    </p>
+                {% endif %}
                 <label for="time_zone">Current time</label>
                 <select name="time_zone">
                   {% for time in times %}
@@ -59,6 +73,13 @@
                 Determine the timezone you are in by selecting the current time.
             </p>
             <p>
+                {% if step == 4 %}
+                    <p class="first_use">
+                        Also look through the other settings. For instance 
+                        <strong>Date representation</strong> can be very confusing 
+                        if it differs from what you are used to.
+                    </p>
+                {% endif %}
                 <label for="date_repr">Date representation</label>
                 <select name="date_repr">
                   {% for date in date_vars %}
@@ -81,8 +102,18 @@
                 Choose the example time format most to you liking.
             </p>
             <p>
+                {% if step == 4 %}
+                    <p class="first_use">
+                        This time represents when a day changes, for example from saterday to sunday. 
+                        Generally this is 00:00. Can be practical to change if you work night shifts.  
+                    </p>
+                {% endif %}
                 <label for="new_day_time">New day time</label>
-                <input name="new_day_time" value="{{new_day_time}}"/>
+                <select name="new_day_time">
+                  {% for time in new_day_times %}
+                    <option value="{{time[0]}}"{% if new_day_time == time[0] %} selected="selected"{% endif %}>{{time[1]}}</option>
+                  {% endfor %}
+                </select>
             </p>
             <p class="form-help">
                 From what time will logging into Timelog create a new day start 
@@ -119,7 +150,39 @@
             {% if step == 1 %}
                 <input type="hidden" value="2" name="step" />
             {% endif %}
+            {% if step == 4 %}
+                <input type="hidden" value="5" name="step" />
+            {% endif %}
+            {% if step == 4 %}
+                <p class="first_use">
+                    Change the settings that need changing and 
+                    <strong>update</strong> for the next step in the walk through.  
+                </p>
+            {% endif %}
         </fieldset>
         <div class="controls"><input class="button" type="submit" value="Update" /></div>
     </form>
+{% endblock %}
+
+
+{% block post_script %}
+    {% if step == 4 %}
+        <script>
+            var $first_use = $('.first_use');
+            i = 0
+            $first_use.hide().eq(i).slideDown();
+            $(document).keyup(function(e) {
+                if (e.keyCode == 32) {
+                    $first_use.eq(i).slideUp();
+                    i++;
+                    if (i == $first_use.length) {
+                        window.location = "http://localhost:8080/?step=5";
+                    }
+                    $first_use.eq(i).slideDown();
+                }
+            }).keypress(function(e) {
+                e.preventDefault();
+            });
+        </script>
+    {% endif %}
 {% endblock %}

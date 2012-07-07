@@ -110,7 +110,7 @@ td.total
 
 .new, form
   .button
-    background-color: $blue4
+    background-color: $grey2
     +filter-gradient(#08153a, #08153a, vertical)
     +background-image(linear-gradient(top, #fff 16%,#ffffff 27%,darken($grey2, 10) 29%, #fff 87%))
     +link-colors($red1 !important, #000 !important)
@@ -155,9 +155,24 @@ td.total
   
 .first_use
   background: #fff
-  border: 2px solid $blue3
   color: $blue2
   
-.first_use
-  padding: 1em
-  +border-radius(1em)
+dl
+  &.info
+    border-color: $info-color
+    dt
+      background-color: $info-color
+    dd
+      background-color: $info-back-color
+  &.warning
+    border-color: $warning-color
+    dt
+      background-color: $warning-color
+    dd
+      background-color: $warning-back-color
+  &.error
+    border-color: $error-color
+    dt
+      background-color: $error-color
+    dd
+      background-color: $error-back-color

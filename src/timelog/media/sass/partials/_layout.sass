@@ -24,9 +24,6 @@ label
 .controls
   input
     @extend .right
-  // margin-left: 10em
-  // input
-    // @extend .right
    
 .button
   display: block
@@ -120,12 +117,12 @@ form
     display: inline
 
 .time, .line
-  left: -4em
+  left: -5.25em
   position: absolute
   top: -0.7em
 
 .legend
-  margin-left: -4em
+  margin-left: -5.25em
   span
     position: static
 
@@ -155,4 +152,31 @@ th, td
 tbody
   th
     text-align: left
-    
+
+.first_use
+  padding: .25em
+  +border-radius(.25em)
+
+p
+  position: relative
+  .first_use
+    display: block
+
+dl
+  &.message
+    border: 
+      width: 1px 
+      style: solid
+    clear: both
+    margin: 1em 0
+    dt
+      font-weight: bold
+      float: left
+      margin: 0 .5em 0 0
+      padding: .5em .75em
+      color: White
+      line-height: 1.25
+    dd
+      padding: .5em
+      margin: 0
+      line-height: 1.25

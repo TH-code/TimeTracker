@@ -24,11 +24,11 @@
     <div class="new">
         <div class="entry">
           {% if time %}
-            <span class="time">{{time}}</span>
+            <span class="time live">{{time}}</span>
             <span class="line">&mdash;</span>
           {% endif %}
           {% if duration %}
-            <span class="duration">{{duration}}</span>
+            <span class="duration live">{{duration}}</span>
           {% endif %}
             <form action="/" method="post">
                 <fieldset>
@@ -52,6 +52,23 @@
                             the walk through. 
                         </p>
                     {% endif %}
+                    {% if step == 5 %}
+                        <p class="first_use">
+                            This is the screen you normally see after login.
+                            Here you can log your activities. If you have 
+                            activities in your log, they will show up in a drop
+                            down menu. 
+                        </p>
+                    {% endif %}
+                    {% if step == 5 %}
+                        <p class="first_use">
+                            In your timelog you log activities. You can categorize
+                            them by separiting categories and your activity by 
+                            {{separator}}. An example of this would be 
+                            <strong>project | category | activity</strong> or 
+                            <strong>client | project | activity</strong>.  
+                        </p>
+                    {% endif %}
                     <p>
                         <label for="new">New activity</label>
                         <input name="new" size="55"/>
@@ -62,7 +79,14 @@
                         can change the separator in your 
                         <a href="/settings">settings</a>.
                     </p>
-                    {% if activities or step == 2 %}
+                    {% if activities or step == 2 or step == 5 %}
+                    {% if step == 5 %}
+                        <p class="first_use">
+                            If anything is filled in for 
+                            <strong>New activity</strong>, the existing one 
+                            will not count. 
+                        </p>
+                    {% endif %}
                     <p>
                         <label for="existing">Existing activity</label>
                         <select name="existing">
@@ -101,14 +125,28 @@
                         </select>
                         
                     </p>
-                    {% if i %}
+                    {% if step == 5 %}
+                        <p class="first_use">
+                            By selecting <strong>Break</strong> the time spent 
+                            will not be counted in the log. 
+                        </p>
                     {% endif %}
                     <p>
                         <label for="break">Break</label>
                         <input name="break" type="checkbox"/> <span class="form-help">breaktime is not counted</span>
                     </p>
+                    {% if step == 5 %}
+                        <p class="first_use">
+                            New activities will be added below the form.<br />
+                            Create a new activity and take the next step in 
+                            the walk through. 
+                        </p>
+                    {% endif %}
                     {% if step == 2 %}
                         <input type="hidden" value="3" name="step" />
+                    {% endif %}
+                    {% if step == 5 %}
+                        <input type="hidden" value="6" name="step" />
                     {% endif %}
                 </fieldset>
                 <div class="controls"><input class="button" type="submit" value="Track"></div>
@@ -144,4 +182,26 @@
       {% endfor %}
     </section>
 
+{% endblock %}
+
+{% block post_script %}
+  {% if step == 5 %}
+    <script>
+        var $first_use = $('.first_use');
+        i = 0
+        $first_use.hide().eq(i).slideDown();
+        $(document).keyup(function(e) {
+            if (e.keyCode == 32) {
+                $first_use.eq(i).slideUp();
+                i++;
+                if (i == $first_use.length) {
+                    window.location = "http://localhost:8080/report?step=6";
+                }
+                $first_use.eq(i).slideDown();
+            }
+        }).keypress(function(e) {
+            e.preventDefault();
+        });
+    </script>
+  {% endif %}
 {% endblock %}

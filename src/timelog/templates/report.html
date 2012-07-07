@@ -32,10 +32,26 @@
                     <a href="/help">help section</a>, you can submit an issue, 
                     send an email. 
                     <br /><br />
-                    <strong>Happy logging!</strong> 
+                    <strong><a href="/">Happy logging!</a></strong> 
+                    <br /><br /> 
+                    <br /><br /> 
+                    <br /><br />
+                    Now try the <a href="/settings?step=4">alternative walk through</a> please. 
+                </p>
+            {% endif %}
+            {% if step == 6 %}
+                <p class="first_use">
+                    This is where you would read out reports of your log.
+                    Currently this is not yet functional. 
                 </p>
             {% endif %}
             <p>
+            {% if step == 6 %}
+                <p class="first_use">
+                    In this form you would pick the data you would like to see
+                    in your report.
+                </p>
+            {% endif %}
                 <label for="show">Show</label>
                 <select name="show">
                     <option>weeks</option>
@@ -60,6 +76,13 @@
                 </span>
             </p>
             <p>
+            {% if step == 6 %}
+                <p class="first_use">
+                    Here you will be able to compact your report to only show 
+                    the main activity. So it would not show anything after a 
+                    separator ({{separator}}).
+                </p>
+            {% endif %}
                 <label for="full">Show full activity</label>
                 <input name="full" type="checkbox" />
             </p>
@@ -69,6 +92,19 @@
                 separator) will be shown.
             </p>
         </fieldset>
+            {% if step == 6 %}
+                <p class="first_use">
+                    This is the last step in the walkthrough. If you have 
+                    questions that are not answered in the 
+                    <a href="/help">help section</a>, you can submit an issue, 
+                    send an email.  
+                </p>
+            {% endif %}
+            {% if step == 6 %}
+                <p class="first_use">
+                    <strong><a href="/">Happy logging!</a></strong> 
+                </p>
+            {% endif %}
         <div class="controls"><input class="button" type="submit" value="Report"></div>
     </form>
     <table>
@@ -126,4 +162,29 @@
       {% endfor %}
     </section-->
 
+{% endblock %}
+{% block post_script %}
+    {% if step == 6 %}
+        <script>
+            var $first_use = $('.first_use');
+            i = 0
+            $first_use.hide().eq(i).slideDown();
+            $(document).keyup(function(e) {
+                if (e.keyCode == 32) {
+                    $first_use.eq(i).slideUp();
+                    i++;
+                    if (i == $first_use.length - 1) {
+                        setTimeout(
+                            function () {
+                                window.location = "http://localhost:8080/"
+                            }, 5000
+                        )
+                    }
+                    $first_use.eq(i).slideDown();
+                }
+            }).keypress(function(e) {
+                e.preventDefault();
+            });
+        </script>
+    {% endif %}
 {% endblock %}
